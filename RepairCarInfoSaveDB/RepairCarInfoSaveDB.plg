@@ -1,0 +1,46 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: RepairCarInfoSaveDB - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\Users\K1375\AppData\Local\Temp\RSP5BAB.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "REPAIRCARINFOSAVEDB_EXPORTS" /Fp"Debug/RepairCarInfoSaveDB.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ  /c 
+"F:\MyProject\RepairCarInfoManage\RepairCarInfoSaveDB\RepairCarInfoSaveDB.cpp"
+"F:\MyProject\RepairCarInfoManage\RepairCarInfoSaveDB\RepairCarInfoSaveImpl.cpp"
+]
+Creating command line "cl.exe @C:\Users\K1375\AppData\Local\Temp\RSP5BAB.tmp" 
+Creating temporary file "C:\Users\K1375\AppData\Local\Temp\RSP5BAC.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "REPAIRCARINFOSAVEDB_EXPORTS" /Fp"Debug/RepairCarInfoSaveDB.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ  /c 
+"F:\MyProject\RepairCarInfoManage\RepairCarInfoSaveDB\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\Users\K1375\AppData\Local\Temp\RSP5BAC.tmp" 
+Creating temporary file "C:\Users\K1375\AppData\Local\Temp\RSP5BAD.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:yes /pdb:"..\bin/RepairCarInfoSaveDBD.pdb" /debug /machine:I386 /out:"..\bin/RepairCarInfoSaveDBD.dll" /implib:"..\bin/RepairCarInfoSaveDBD.lib" /pdbtype:sept 
+.\Debug\StdAfx.obj
+.\Debug\RepairCarInfoSaveDB.obj
+.\Debug\RepairCarInfoSaveImpl.obj
+]
+Creating command line "link.exe @C:\Users\K1375\AppData\Local\Temp\RSP5BAD.tmp"
+<h3>Output Window</h3>
+Compiling...
+StdAfx.cpp
+Compiling...
+RepairCarInfoSaveDB.cpp
+RepairCarInfoSaveImpl.cpp
+Generating Code...
+Linking...
+   Creating library ..\bin/RepairCarInfoSaveDBD.lib and object ..\bin/RepairCarInfoSaveDBD.exp
+
+
+
+<h3>Results</h3>
+RepairCarInfoSaveDBD.dll - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
