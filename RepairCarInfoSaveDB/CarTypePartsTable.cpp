@@ -186,7 +186,7 @@ int CCarTypePartsTable::GetCarTypePartsInfo(const PSearchCarTypePartsInfo pInfo,
 	sql<<" CarPartInfo.MMCNum like '%"<<pInfo->csMMCNum<<"%' and";
 	sql<<" CarPartInfo.ChineseName like '%"<<pInfo->csChineseName<<"%'";
 
-	sql<<" order by CarTypeInfo.CarDetailTypeNum ";
+	sql<<" order by CarTypeInfo.CarDetailTypeNum,CarPartInfo.CarTypeNum,CarPartInfo.DAENum,CarPartInfo.MMCNum ";
 	if (false == bOrderInc)
 		sql<<"desc ";
 	sql<<"limit "<<iMaxCount<<" offset "<<iMaxCount*iPages<<";";
@@ -215,7 +215,7 @@ int CCarTypePartsTable::GetCarPartsDataHandle(void * lpPara, int nColumn, char *
 
 	CConvertChar convertChar;
 
-	for (int i=0;i<nColumn;++i)
+	/*for (int i=0;i<nColumn;++i)
 	{
 		//,,,,,,ChineseName,
 		if (0== strcmp(lppColumnName[i],"CarDetailTypeNum"))
@@ -264,7 +264,16 @@ int CCarTypePartsTable::GetCarPartsDataHandle(void * lpPara, int nColumn, char *
 		{
 			tempCarTypeInfo.iLevel = atoi(lppColumnValue[i]);
 		}
-	}
+	}*/
+
+	strcpy(tempCarTypeInfo.csCarDetailTypeNum,lppColumnValue[0]);
+	strcpy(tempCarTypeInfo.csCarFactory,convertChar.ToGBK(lppColumnValue[1]));
+	strcpy(tempCarTypeInfo.csCarDetailName,convertChar.ToGBK(lppColumnValue[2]));
+	strcpy(tempCarTypeInfo.csCarTypeNum,convertChar.ToGBK(lppColumnValue[3]));
+	strcpy(tempCarTypeInfo.csDAENum,lppColumnValue[4]);
+	strcpy(tempCarTypeInfo.csMMCNum,lppColumnValue[5]);
+	strcpy(tempCarTypeInfo.csChineseName,convertChar.ToGBK(lppColumnValue[6]));
+	tempCarTypeInfo.iLevel = atoi(lppColumnValue[7]);
 
 	pCarTypeList->push_back(tempCarTypeInfo);
 
@@ -288,7 +297,7 @@ int CCarTypePartsTable::GetCarTypeDataHandle(void * lpPara, int nColumn, char **
 
 		if (0== strcmp(lppColumnName[i],"CarDetailTypeNum"))
 		{
-			strcpy(tempCarTypeInfo.csCarDetailTypeNum,convertChar.ToGBK(lppColumnValue[i]));
+			strcpy(tempCarTypeInfo.csCarDetailTypeNum,lppColumnValue[i]);
 			continue;
 		}
 

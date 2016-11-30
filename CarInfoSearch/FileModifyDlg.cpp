@@ -85,6 +85,7 @@ BOOL CFileModifyDlg::OnInitDialog()
 	s_fileSavePath += "SaveInfo\\Resource\\";
 
 	MakeSureDirectoryPathExists(s_fileSavePath);
+	SetFileAttributes(s_fileSavePath, FILE_ATTRIBUTE_HIDDEN ); //隐藏
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// Òì³£: OCX ÊôÐÔÒ³Ó¦·µ»Ø FALSE

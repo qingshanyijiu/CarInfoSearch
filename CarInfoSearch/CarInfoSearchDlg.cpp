@@ -16,6 +16,7 @@
 #include "LoginDlg.h"
 #include "PWDModifyDlg.h"
 #include "FileModifyDlg.h"
+#include "LoadDataDlg.h"
 
 
 #ifdef _DEBUG
@@ -225,6 +226,11 @@ BOOL CCarInfoSearchDlg::OnInitDialog()
 	pWnd->Create(IDD_DIALOG_SYSAbout,this);
 	ShowParamDlg(pWnd,FALSE);
 	m_pages[IDD_DIALOG_SYSAbout] = pWnd;
+
+	pWnd = new CLoadDataDlg();
+	pWnd->Create(IDD_DIALOG_LOAD_DATA,this);
+	ShowParamDlg(pWnd,FALSE);
+	m_pages[IDD_DIALOG_LOAD_DATA] = pWnd;
 	
 	
 	int leftpad =0,toppad =-1;
@@ -288,13 +294,25 @@ BOOL CCarInfoSearchDlg::OnInitDialog()
 		if (s_dwUserPower&USER_POWER_FILE_MANAGER)
 		{
 			GetDlgItem(IDC_BUTTON_FILE_MODUFIY)->GetWindowRect(&ChildRect);
-			pChild= new CButtonExd(this,(CButton*)GetDlgItem(IDC_BUTTON_FILE_MODUFIY),_T("资料查询"),IDC_BUTTON_FILE_MODUFIY,0,toppad);
+			pChild= new CButtonExd(this,(CButton*)GetDlgItem(IDC_BUTTON_FILE_MODUFIY),_T("资料录入"),IDC_BUTTON_FILE_MODUFIY,0,toppad);
 			pChild->SetAfterLBClickDealFunc(std::tr1::bind(&CCarInfoSearchDlg::OnBnClickedButtonFileModify, this));
 			pCurrent->AddChild(pChild);
 		}
 		else
 		{
 			GetDlgItem(IDC_BUTTON_FILE_MODUFIY)->ShowWindow(SW_HIDE);
+		}
+
+		if (s_dwUserPower&USER_POWER_LOAD_DATA)
+		{
+			GetDlgItem(IDC_BUTTON_FILE_LOAD)->GetWindowRect(&ChildRect);
+			pChild= new CButtonExd(this,(CButton*)GetDlgItem(IDC_BUTTON_FILE_LOAD),_T("数据导入"),IDC_BUTTON_FILE_LOAD,0,toppad);
+			pChild->SetAfterLBClickDealFunc(std::tr1::bind(&CCarInfoSearchDlg::OnBnClickedButtonFileLoadData, this));
+			pCurrent->AddChild(pChild);
+		}
+		else
+		{
+			GetDlgItem(IDC_BUTTON_FILE_LOAD)->ShowWindow(SW_HIDE);
 		}
 	}
 	else
@@ -303,6 +321,7 @@ BOOL CCarInfoSearchDlg::OnInitDialog()
 		GetDlgItem(IDC_BTN_CarTypeMODIFY)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_BTN_MTMODIFY)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_BUTTON_FILE_MODUFIY)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BUTTON_FILE_LOAD)->ShowWindow(SW_HIDE);
 	}
 	
 	pCurrent=m_root;
@@ -730,4 +749,9 @@ void CCarInfoSearchDlg::OnBnClickedButtonFileQuery()
 {
 	RightPageShow(IDD_DIALOG_FILE_QUERY);
 	
+}
+
+void CCarInfoSearchDlg::OnBnClickedButtonFileLoadData()
+{
+	RightPageShow(IDD_DIALOG_LOAD_DATA);
 }

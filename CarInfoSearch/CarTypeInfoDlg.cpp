@@ -131,7 +131,7 @@ void CCarTypeInfoDlg::SetOperateType(BYTE bType,PCarTypeTableInfo pInfo/*=NULL*/
 		m_editDetailName.SetWindowText(pInfo->csCarDetailName);
 		m_editDetailTypeNum.SetWindowText(pInfo->csCarDetailTypeNum);
 		m_editCarFactory.SetWindowText(pInfo->csCarFactory);
-		m_editCarStatus.SetWindowText(pInfo->csCarFactory);
+		m_editCarStatus.SetWindowText(pInfo->csCarStatus);
 		m_editCarTypeNum.SetWindowText(pInfo->csCarTypeNum);
 		m_editCarNotes.SetWindowText(pInfo->strCarNotes.c_str());
 

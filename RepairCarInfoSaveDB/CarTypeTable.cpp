@@ -93,7 +93,7 @@ int CCarTypeTable::GetCarTypeInfo(const PCarTypeTableInfo pInfo,int iPages,int i
 	sql<<" CarDetailName like '%"<<pInfo->csCarDetailName<<"%' and ";
 	sql<<" CarNotes like '%"<<pInfo->strCarNotes.c_str()<<"%' ";
 
-	sql<<" order by CarDetailTypeNum ";
+	sql<<" order by CarTypeNum,CarDetailTypeNum ";
 	if (false == bOrderInc)
 		sql<<"desc ";
 	sql<<"limit "<<iMaxCount<<" offset "<<iMaxCount*iPages<<";";
@@ -123,7 +123,7 @@ int CCarTypeTable::GetCarTypeDataHandle(void * lpPara, int nColumn, char ** lppC
 
 		if (0== strcmp(lppColumnName[i],"CarDetailTypeNum"))
 		{
-			strcpy(tempCarTypeInfo.csCarDetailTypeNum,convertChar.ToGBK(lppColumnValue[i]));
+			strcpy(tempCarTypeInfo.csCarDetailTypeNum,lppColumnValue[i]);
 			continue;
 		}
 

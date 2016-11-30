@@ -110,6 +110,7 @@
     <ClInclude Include="CarPartInfoQueryDlg.h" />
     <ClInclude Include="ColoredStatusBarCtrl.h" />
     <ClInclude Include="FileModifyDlg.h" />
+    <ClInclude Include="LoadDataDlg.h" />
     <ClInclude Include="LoginDlg.h" />
     <ClInclude Include="PWDModifyDlg.h" />
     <ClInclude Include="QueryCarTypePartsDlg.h" />
@@ -130,6 +131,7 @@
     <ClCompile Include="CarPartInfoQueryDlg.cpp" />
     <ClCompile Include="ColoredStatusBarCtrl.cpp" />
     <ClCompile Include="FileModifyDlg.cpp" />
+    <ClCompile Include="LoadDataDlg.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
     <ClCompile Include="PWDModifyDlg.cpp" />
     <ClCompile Include="QueryCarTypePartsDlg.cpp" />

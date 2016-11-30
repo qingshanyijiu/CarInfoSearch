@@ -51,6 +51,7 @@
 
 #define  USER_POWER_MODIFY			(0x0002)
 #define  USER_POWER_FILE_MANAGER	(0x0004)
+#define  USER_POWER_LOAD_DATA		(0x0008)
 
 
 #ifdef _UNICODE

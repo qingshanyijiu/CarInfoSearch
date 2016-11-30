@@ -59,6 +59,7 @@ public:
 	afx_msg void OnBnClickedButtonBasicset();
 	afx_msg void OnBnClickedButtonFileModify();
 	afx_msg void OnBnClickedButtonFileQuery();
+	afx_msg void OnBnClickedButtonFileLoadData();
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);

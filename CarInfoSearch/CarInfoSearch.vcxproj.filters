@@ -81,6 +81,9 @@
     <ClInclude Include="FileModifyDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LoadDataDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CarInfoSearch.cpp">
@@ -129,6 +132,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileModifyDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadDataDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

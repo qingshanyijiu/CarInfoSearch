@@ -81,7 +81,7 @@ int CCarFileDataTable::GetCarFileData(const PCarFileData pInfo,int iPages,int iM
 	sql<<" CarFileName like '%"<<pInfo->strFileName<<"%' and ";
 	sql<<" Notes like '%"<<pInfo->strNotes<<"%'";
 
-	sql<<" order by CarFileName ";
+	sql<<" order by CarTypeNum,CarFileName ";
 	if (false == bOrderInc)
 		sql<<"desc ";
 	sql<<"limit "<<iMaxCount<<" offset "<<iMaxCount*iPages<<";";

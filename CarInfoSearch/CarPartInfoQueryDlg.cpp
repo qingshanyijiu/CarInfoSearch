@@ -139,6 +139,8 @@ void CCarPartInfoQueryDlg::OnSmenuCarPartqueryCarType()
 
 	m_querySuppDlg.SetCartPartInfo(&tempInfo,OPERATE_TYPE_SHOW);
 	m_querySuppDlg.DoModal();	
+
+	m_CarPartinfolist.SetFocus();
 }
 
 BOOL CCarPartInfoQueryDlg::OnInitDialog()
@@ -156,15 +158,15 @@ BOOL CCarPartInfoQueryDlg::OnInitDialog()
 	//dwStyle |= LVS_EX_CHECKBOXES;//item前生成checkbox控件
 	m_CarPartinfolist.SetExtendedStyle(dwStyle); //设置扩展风格
 	m_CarPartinfolist.InsertColumn( 0, "机型编号", LVCFMT_LEFT, 73 );
-	m_CarPartinfolist.InsertColumn( 1, "DAE件号", LVCFMT_LEFT, 135 );
-	m_CarPartinfolist.InsertColumn( 2, "MMC件号", LVCFMT_LEFT, 135 );
+	m_CarPartinfolist.InsertColumn( 1, "DAE件号", LVCFMT_LEFT, 125 );
+	m_CarPartinfolist.InsertColumn( 2, "MMC件号", LVCFMT_LEFT, 120 );
 	m_CarPartinfolist.InsertColumn( 3, "零件名称", LVCFMT_LEFT,130 );
 	m_CarPartinfolist.InsertColumn( 4, "EPL号", LVCFMT_LEFT, 65 );
 	m_CarPartinfolist.InsertColumn( 5, "VC号", LVCFMT_LEFT, 43 );
 	m_CarPartinfolist.InsertColumn( 6, "级别", LVCFMT_LEFT, 42 );
 	m_CarPartinfolist.InsertColumn( 7, "英文名称", LVCFMT_LEFT, 90 );
-	m_CarPartinfolist.InsertColumn( 8, "参考图号", LVCFMT_LEFT, 130 );
-	m_CarPartinfolist.InsertColumn( 9, "安装图号", LVCFMT_LEFT, 75 );
+	m_CarPartinfolist.InsertColumn( 8, "参考图号", LVCFMT_LEFT, 120 );
+	m_CarPartinfolist.InsertColumn( 9, "安装图号", LVCFMT_LEFT, 110 );
 	m_CarPartinfolist.InsertColumn( 10, "安装记号", LVCFMT_LEFT, 75 );
 
 	m_iTotalRecord=0;
@@ -388,4 +390,6 @@ void CCarPartInfoQueryDlg::OnSmenuCarpartmodifycartype()
 
 	m_querySuppDlg.SetCartPartInfo(&tempInfo,OPERATE_TYPE_MODIFY);
 	m_querySuppDlg.DoModal();	
+
+	m_CarPartinfolist.SetFocus();
 }

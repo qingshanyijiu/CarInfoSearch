@@ -103,7 +103,7 @@ int CCarPartTable::GetCarPartInfo(const PCarPartTableInfo pInfo,int iPages,int i
 	sql<<" PicNum like '%"<<pInfo->csPicNum<<"%' and ";
 	sql<<" ChineseName like '%"<<pInfo->csChineseName<<"%' ";
 
-	sql<<" order by CarTypeNum ";
+	sql<<" order by CarTypeNum,DAENum,MMCNum ";
 	if (false == bOrderInc)
 		sql<<"desc ";
 	sql<<"limit "<<iMaxCount<<" offset "<<iMaxCount*iPages<<";";
@@ -145,25 +145,25 @@ int CCarPartTable::GetCarPartInfoDataHandle(void * lpPara, int nColumn, char ** 
 
 		if (0== strcmp(lppColumnName[i],"DAENum"))
 		{
-			strcpy(tempInfo.csDAENum,convertChar.ToGBK(lppColumnValue[i]));
+			strcpy(tempInfo.csDAENum,lppColumnValue[i]);
 			continue;
 		}
 
 		if (0== strcmp(lppColumnName[i],"MMCNum"))
 		{
-			strcpy(tempInfo.csMMCNum,convertChar.ToGBK(lppColumnValue[i]));
+			strcpy(tempInfo.csMMCNum,lppColumnValue[i]);
 			continue;
 		}
 
 		if (0== strcmp(lppColumnName[i],"EPLNum"))
 		{
-			strcpy(tempInfo.csEPLNum,convertChar.ToGBK(lppColumnValue[i]));
+			strcpy(tempInfo.csEPLNum,lppColumnValue[i]);
 			continue;
 		}
 
 		if (0== strcmp(lppColumnName[i],"VCNum"))
 		{
-			strcpy(tempInfo.csVCNum,convertChar.ToGBK(lppColumnValue[i]));
+			strcpy(tempInfo.csVCNum,lppColumnValue[i]);
 			continue;
 		}
 
@@ -187,13 +187,13 @@ int CCarPartTable::GetCarPartInfoDataHandle(void * lpPara, int nColumn, char ** 
 
 		if (0== strcmp(lppColumnName[i],"PicNum"))
 		{
-			strcpy(tempInfo.csPicNum,convertChar.ToGBK(lppColumnValue[i]));
+			strcpy(tempInfo.csPicNum,lppColumnValue[i]);
 			continue;
 		}
 
 		if (0== strcmp(lppColumnName[i],"InstallNum"))
 		{
-			strcpy(tempInfo.csInstallNum,convertChar.ToGBK(lppColumnValue[i]));
+			strcpy(tempInfo.csInstallNum,lppColumnValue[i]);
 			continue;
 		}
 
