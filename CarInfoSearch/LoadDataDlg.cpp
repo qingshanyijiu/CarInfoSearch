@@ -56,7 +56,7 @@ BOOL CLoadDataDlg::OnInitDialog()
 	m_loadSelectCombo.SetCurSel(3);
 	//SetDlgItemText(IDC_EDIT_LoadFileName,"C:\\Users\\Administrator\\Desktop\\CarInfoManager\\bin\\carparts.txt");
 
-	SetDlgItemText(IDC_EDIT_LoadFileName,"F:\\MyProject\\CarInfoManager\\bin\\4G1.txt");
+	SetDlgItemText(IDC_EDIT_LoadFileName,"F:\\MyProject\\CarInfoManager\\bin\\D系列.txt");
 
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -337,8 +337,8 @@ bool CLoadDataDlg::InsertCarTypePartsData(const char* lpStr)
 	}
 }
 
-#define DIV_ROW_COUNT		(91)
-#define DIV_ROW_INDEX		(83)
+#define DIV_ROW_COUNT		(8)
+#define DIV_ROW_INDEX		(3)
 
 /*
 bool CLoadDataDlg::InsertCarTypePartsDataEx(const char* lpStr)
@@ -526,7 +526,7 @@ bool CLoadDataDlg::InsertCarTypePartsDataEx(const char* lpStr)
 		return true;
 	}
 }*/
-
+/*
 bool CLoadDataDlg::InsertCarTypePartsDataEx(const char* lpStr)
 {
 	//83-91
@@ -597,6 +597,71 @@ bool CLoadDataDlg::InsertCarTypePartsDataEx(const char* lpStr)
 		strcpy(tempInfo.csCarTypeNum,tempPartInfo.csCarTypeNum);
 		strcpy(tempInfo.csDAENum,tempPartInfo.csDAENum);
 		strcpy(tempInfo.csMMCNum,tempPartInfo.csMMCNum);
+
+		typeVect.clear();
+
+		for (int i=0;i<DIV_ROW_INDEX;++i)
+		{
+			if (!strArray[i].IsEmpty())
+			{
+				typeVect.push_back(strTypeArray[i].operator LPCSTR());
+
+			}
+		}
+
+		//int iCount = typeVect.size();
+		if (typeVect.size())
+		{
+			UpdateCarTypePartsInfo(&tempInfo,typeVect);
+		}
+
+		return true;
+	}
+	else
+	{
+		m_oFile<<lpStr<<endl;
+		return true;
+	}
+}*/
+
+bool CLoadDataDlg::InsertCarTypePartsDataEx(const char* lpStr)
+{
+	//3-8
+	CString strData = lpStr;
+	CStringArray strArray,strTypeArray;
+	char ch = 9;
+	vector<string> typeVect;
+	int index;
+	typeVect.reserve(DIV_ROW_INDEX);
+
+	strTypeArray.Add("D20VVT-B");strTypeArray.Add("D20VVT-C");strTypeArray.Add("D20VVT-F");
+
+	if (DivStrEx(strData,strArray,ch,DIV_ROW_COUNT)==DIV_ROW_COUNT)
+	{
+		CarPartTableInfo tempPartInfo;
+		strncpy(tempPartInfo.csCarTypeNum,"D系列",16);
+		index = DIV_ROW_INDEX;
+		if (!strArray[index].IsEmpty())
+			tempPartInfo.iLevel = atoi(strArray[index].operator LPCSTR());
+
+		++index;
+		if (!strArray[index].IsEmpty())
+			strncpy(tempPartInfo.csDAENum,strArray[index].operator LPCSTR(),32);
+
+		++index;
+		if (!strArray[index].IsEmpty())
+			strncpy(tempPartInfo.csChineseName,strArray[index].operator LPCSTR(),64);
+
+		index += 2;
+		if (!strArray[index].IsEmpty())
+			strncpy(tempPartInfo.csPicNum,strArray[index].operator LPCSTR(),32);
+
+		InsertCarPartInfo(&tempPartInfo);
+
+		CarTypePartsTableInfo tempInfo;
+		strcpy(tempInfo.csCarTypeNum,tempPartInfo.csCarTypeNum);
+		strcpy(tempInfo.csDAENum,tempPartInfo.csDAENum);
+		//strcpy(tempInfo.csMMCNum,tempPartInfo.csMMCNum);
 
 		typeVect.clear();
 

@@ -59,7 +59,7 @@ void CColoredStatusBarCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			break;
 	}
 
-	dc.TextOut(rect.left+5,rect.top,m_statusStrVect[lpDrawItemStruct->itemID]);
+	dc.TextOut(rect.left+5,rect.top+2,m_statusStrVect[lpDrawItemStruct->itemID]);
 	
 
 	// Detach from the CDC object, otherwise the hDC will be
