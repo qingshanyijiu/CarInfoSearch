@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "ListCtrlExtention.h"
 using namespace std;
 
 
@@ -34,7 +35,7 @@ public:
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedButtonEtpSearch();
-	CListCtrl m_carTypePartsList;
+	CListCtrlExtention m_carTypePartsList;
 	afx_msg void OnBnClickedButtonCtpBefore();
 	afx_msg void OnBnClickedButtonEtpNext();
 	afx_msg void OnRclickListCarTypeParts(NMHDR *pNMHDR, LRESULT *pResult);

@@ -78,7 +78,7 @@ void CCarPartInfoQueryDlg::OnSmenuCarPartdelete()
 	int selectIndex = m_CarPartinfolist.GetSelectionMark();
 	if(selectIndex<0)
 		return;
-	if(IDYES== MessageBox("是否删除当前选中的零件信息?","提示",MB_YESNO))
+	if(IDYES== MessageBox("是否删除当前选中的零件信息?\nWhether to delete this record?","提示(Notify)",MB_YESNO))
 	{
 		CString strTemp;
 		CarPartTableInfo tempInfo;
@@ -156,18 +156,25 @@ BOOL CCarPartInfoQueryDlg::OnInitDialog()
 	dwStyle |= LVS_EX_FULLROWSELECT;//选中某行使整行高亮（只适用与report风格的listctrl）
 	dwStyle |= LVS_EX_GRIDLINES;//网格线（只适用与report风格的listctrl）
 	//dwStyle |= LVS_EX_CHECKBOXES;//item前生成checkbox控件
+
+	int iWidth = m_CarPartinfolist.GetListWidth();
 	m_CarPartinfolist.SetExtendedStyle(dwStyle); //设置扩展风格
-	m_CarPartinfolist.InsertColumn( 0, "机型编号", LVCFMT_LEFT, 73 );
-	m_CarPartinfolist.InsertColumn( 1, "DAE件号", LVCFMT_LEFT, 125 );
-	m_CarPartinfolist.InsertColumn( 2, "MMC件号", LVCFMT_LEFT, 120 );
-	m_CarPartinfolist.InsertColumn( 3, "零件名称", LVCFMT_LEFT,130 );
-	m_CarPartinfolist.InsertColumn( 4, "EPL号", LVCFMT_LEFT, 65 );
-	m_CarPartinfolist.InsertColumn( 5, "VC号", LVCFMT_LEFT, 43 );
-	m_CarPartinfolist.InsertColumn( 6, "级别", LVCFMT_LEFT, 42 );
-	m_CarPartinfolist.InsertColumn( 7, "英文名称", LVCFMT_LEFT, 90 );
-	m_CarPartinfolist.InsertColumn( 8, "参考图号", LVCFMT_LEFT, 120 );
-	m_CarPartinfolist.InsertColumn( 9, "安装图号", LVCFMT_LEFT, 110 );
-	m_CarPartinfolist.InsertColumn( 10, "安装记号", LVCFMT_LEFT, 75 );
+	m_CarPartinfolist.InsertColumn( 0, "机型编号\nTypeNum", LVCFMT_LEFT, (int)(iWidth*0.07) );
+	m_CarPartinfolist.InsertColumn( 1, "DAE件号\nDAE Num", LVCFMT_LEFT, (int)(iWidth*0.12) );
+	m_CarPartinfolist.InsertColumn( 2, "MMC件号\nMMC Num", LVCFMT_LEFT, (int)(iWidth*0.11) );
+	m_CarPartinfolist.InsertColumn( 3, "零件名称\nPartName", LVCFMT_LEFT,(int)(iWidth*0.13) );
+	m_CarPartinfolist.InsertColumn( 4, "EPL号\nEPLNUM", LVCFMT_LEFT, (int)(iWidth*0.06) );
+	m_CarPartinfolist.InsertColumn( 5, "VC号\nVCNum", LVCFMT_LEFT, (int)(iWidth*0.04) );
+	m_CarPartinfolist.InsertColumn( 6, "级别\nLevel", LVCFMT_LEFT, (int)(iWidth*0.04) );
+	m_CarPartinfolist.InsertColumn( 7, "英文名称\nEngName", LVCFMT_LEFT,(int)(iWidth*0.09) );
+	m_CarPartinfolist.InsertColumn( 8, "参考图号\nDrawName", LVCFMT_LEFT, (int)(iWidth*0.11) );
+	m_CarPartinfolist.InsertColumn( 9, "安装图号\nInsNum", LVCFMT_LEFT, (int)(iWidth*0.1) );
+	m_CarPartinfolist.InsertColumn( 10, "安装记号\nInsMark", LVCFMT_LEFT, (int)(iWidth*0.06) );
+	m_CarPartinfolist.InsertColumn( 11, "零件备注\nPartNotes", LVCFMT_LEFT, (int)(iWidth*0.08) );
+
+	m_CarPartinfolist.InitHead();
+	m_CarPartinfolist.SetMouseWheelCallFunc(std::tr1::bind(&CCarPartInfoQueryDlg::OnBnClickedButtonQCarTypebefore, this),
+		std::tr1::bind(&CCarPartInfoQueryDlg::OnBnClickedButtonQCarTypenext, this));
 
 	m_iTotalRecord=0;
 	m_curPage = 0;
@@ -203,6 +210,10 @@ void CCarPartInfoQueryDlg::OnBnClickedBtnMtQCarPartinfo()
 	GetDlgItemText(IDC_EDIT_CP_PicNum,strTemp);
 	strTemp.Trim();
 	strncpy(m_queryInfo.csPicNum,strTemp.operator LPCSTR(),32);
+
+	GetDlgItemText(IDC_EDIT_CP_PartNotes,strTemp);
+	strTemp.Trim();
+	m_queryInfo.strPartReserve = strTemp;
 	
 	m_curPage = 0;
 	m_CarPartInfoVect.clear();
@@ -321,6 +332,7 @@ void	CCarPartInfoQueryDlg::UpdateDataInfo()
 		m_CarPartinfolist.SetItemText(nRow,9,m_CarPartInfoVect[i].csInstallNum);
 		strTemp.Format("%d",m_CarPartInfoVect[i].iInstallMark);
 		m_CarPartinfolist.SetItemText(nRow,10,strTemp);
+		m_CarPartinfolist.SetItemText(nRow,11,m_CarPartInfoVect[i].strPartReserve.c_str());
 	} 
 
 	m_CarPartinfolist.SetRedraw(TRUE);
@@ -339,6 +351,12 @@ BOOL CCarPartInfoQueryDlg::PreTranslateMessage(MSG* pMsg)
 			return true;
 		case VK_RETURN: //Enter按键事件
 			OnBnClickedBtnMtQCarPartinfo();
+			return true;
+		case VK_PRIOR:
+			OnBnClickedButtonQCarTypebefore();
+			return true;
+		case VK_NEXT:
+			OnBnClickedButtonQCarTypenext();
 			return true;
 		default:
 			;

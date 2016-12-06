@@ -54,22 +54,28 @@ BOOL CQuerySuppTypesDlg::OnInitDialog()
 	if (OPERATE_TYPE_SHOW != m_opType)
 	{
 		dwStyle |= LVS_EX_CHECKBOXES;//item前生成checkbox控件
-		SetDlgItemText(IDC_STATIC_CTP_NOTIFY,"请勾选所支持的机型编号:");
+		SetDlgItemText(IDC_STATIC_CTP_NOTIFY,"请勾选所支持的机型编号:\nPlease check the supported type number:");
 	}
 	else
 	{
 		CString strTemp;
-		strTemp.Format("零件: 机型编号为%s，DAE件号为%s，MMC件号为%s\n\r\n\r该零件支持的机型信息如下:",
+		strTemp.Format("零件: 机型编号-%s,DAE件号-%s,MMC件号-%s\t该零件支持的机型信息如下:\nPart: TypeNum-%s,DAE Num-%s,MMC Num-%s\tthe type supported the part of:", \
+			m_carPartTypeInfoKey.csCarTypeNum,m_carPartTypeInfoKey.csDAENum,m_carPartTypeInfoKey.csMMCNum,\
 			m_carPartTypeInfoKey.csCarTypeNum,m_carPartTypeInfoKey.csDAENum,m_carPartTypeInfoKey.csMMCNum);
 		SetDlgItemText(IDC_STATIC_CTP_NOTIFY,strTemp);
 	}
-
 	m_suppCarTypeList.SetExtendedStyle(dwStyle); //设置扩展风格
-	m_suppCarTypeList.InsertColumn( 0, "发动机编号", LVCFMT_LEFT, 180 );
-	m_suppCarTypeList.InsertColumn( 1, "机型编号", LVCFMT_LEFT, 100 );
-	m_suppCarTypeList.InsertColumn( 2, "车厂名称", LVCFMT_LEFT, 150 );
-	m_suppCarTypeList.InsertColumn( 3, "机型状态", LVCFMT_LEFT, 120 );
-	m_suppCarTypeList.InsertColumn( 4, "车型名称", LVCFMT_LEFT, 180 );
+
+
+	int iWidth = m_suppCarTypeList.GetListWidth();
+	m_suppCarTypeList.InsertColumn( 0, "发动机编号\nEngineNum", LVCFMT_LEFT, (int)(iWidth*0.2) );
+	m_suppCarTypeList.InsertColumn( 1, "机型编号\nTypeNum", LVCFMT_LEFT, (int)(iWidth*0.12) );
+	m_suppCarTypeList.InsertColumn( 2, "车厂名称\nDepotName", LVCFMT_LEFT, (int)(iWidth*0.15) );
+	m_suppCarTypeList.InsertColumn( 3, "机型状态\nTypeStatus", LVCFMT_LEFT, (int)(iWidth*0.15) );
+	m_suppCarTypeList.InsertColumn( 4, "车型名称\nTypeName", LVCFMT_LEFT, (int)(iWidth*0.2) );
+
+	m_suppCarTypeList.InitHead();
+	
 
 	UpdateDataInfo();
 
@@ -133,7 +139,7 @@ void CQuerySuppTypesDlg::OnCancel()
 	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
 	if (OPERATE_TYPE_SHOW != m_opType)
 	{
-		if(IDYES== MessageBox("是否确定放弃修改?","提示",MB_YESNO))
+		if(IDYES== MessageBox("是否确定放弃修改?\nWhether to give up modification?","提示(Notify)",MB_YESNO))
 		{
 			CDialogEx::OnCancel();
 		}

@@ -64,14 +64,21 @@ BOOL CQueryCarTypePartsDlg::OnInitDialog()
 	dwStyle |= LVS_EX_GRIDLINES;//网格线（只适用与report风格的listctrl）
 	//dwStyle |= LVS_EX_CHECKBOXES;//item前生成checkbox控件
 	m_carTypePartsList.SetExtendedStyle(dwStyle); //设置扩展风格
-	m_carTypePartsList.InsertColumn( 0, "发动机编号", LVCFMT_LEFT, 120 );
-	m_carTypePartsList.InsertColumn( 1, "车厂名称", LVCFMT_LEFT, 120 );
-	m_carTypePartsList.InsertColumn( 2, "车型名称", LVCFMT_LEFT, 140 );
-	m_carTypePartsList.InsertColumn( 3, "机型编号", LVCFMT_LEFT, 100 );
-	m_carTypePartsList.InsertColumn( 4, "DAE件号", LVCFMT_LEFT, 155 );
-	m_carTypePartsList.InsertColumn( 5, "MMC件号", LVCFMT_LEFT, 155 );
-	m_carTypePartsList.InsertColumn( 6, "零件名称", LVCFMT_LEFT, 150 );
-	m_carTypePartsList.InsertColumn( 7, "级别", LVCFMT_LEFT, 50 );
+
+	int iWidth = m_carTypePartsList.GetListWidth();
+	m_carTypePartsList.InsertColumn( 0, "发动机编号\nEngineNum", LVCFMT_LEFT, (int)(iWidth*0.1) );
+	m_carTypePartsList.InsertColumn( 1, "车厂名称\nDepotName", LVCFMT_LEFT, (int)(iWidth*0.12) );
+	m_carTypePartsList.InsertColumn( 2, "车型名称\nTypeName", LVCFMT_LEFT, (int)(iWidth*0.13) );
+	m_carTypePartsList.InsertColumn( 3, "机型编号\nTypeNum", LVCFMT_LEFT, (int)(iWidth*0.1) );
+	m_carTypePartsList.InsertColumn( 4, "DAE件号\nDAE Num", LVCFMT_LEFT, (int)(iWidth*0.13) );
+	m_carTypePartsList.InsertColumn( 5, "MMC件号\nMMC Num", LVCFMT_LEFT, (int)(iWidth*0.10) );
+	m_carTypePartsList.InsertColumn( 6, "零件名称\nPartName", LVCFMT_LEFT, (int)(iWidth*0.15) );
+	m_carTypePartsList.InsertColumn( 7, "级别\nLevel", LVCFMT_LEFT,(int)(iWidth*0.04) );
+	m_carTypePartsList.InsertColumn( 8, "零件备注\nPartNotes", LVCFMT_LEFT, (int)(iWidth*0.13) );
+
+	m_carTypePartsList.InitHead();
+	m_carTypePartsList.SetMouseWheelCallFunc(std::tr1::bind(&CQueryCarTypePartsDlg::OnBnClickedButtonCtpBefore, this),
+		std::tr1::bind(&CQueryCarTypePartsDlg::OnBnClickedButtonEtpNext, this));
 
 	m_iTotalRecord = 0;
 	m_curPage = 0;
@@ -98,6 +105,12 @@ BOOL CQueryCarTypePartsDlg::PreTranslateMessage(MSG* pMsg)
 			return true;
 		case VK_RETURN: //Enter按键事件
 			OnBnClickedButtonEtpSearch();
+			return true;
+		case VK_PRIOR:
+			OnBnClickedButtonCtpBefore();
+			return true;
+		case VK_NEXT:
+			OnBnClickedButtonEtpNext();
 			return true;
 		default:
 			;
@@ -142,6 +155,10 @@ void CQueryCarTypePartsDlg::OnBnClickedButtonEtpSearch()
 	GetDlgItemText(IDC_EDIT_CTP_CarDetailName,strTemp);
 	strTemp.Trim();
 	strncpy(m_queryInfo.csCarDetailName,strTemp.operator LPCSTR(),32);
+
+	GetDlgItemText(IDC_EDIT_CTP_PartNotes,strTemp);
+	strTemp.Trim();
+	m_queryInfo.strPartReserve = strTemp;
 
 	m_curPage = 0;
 	m_carTypePartsInfoVect.clear();
@@ -295,6 +312,7 @@ void CQueryCarTypePartsDlg::UpdateDataInfo()
 		m_carTypePartsList.SetItemText(nRow, 6, m_carTypePartsInfoVect[i].csChineseName);
 		strTemp.Format("%d",m_carTypePartsInfoVect[i].iLevel);
 		m_carTypePartsList.SetItemText(nRow, 7, strTemp);
+		m_carTypePartsList.SetItemText(nRow, 8, m_carTypePartsInfoVect[i].strPartReserve.c_str());
 	} 
 
 	m_carTypePartsList.SetRedraw(TRUE);
@@ -358,7 +376,7 @@ void CQueryCarTypePartsDlg::OnSmenuCtpDelete()
 	int selectIndex = m_carTypePartsList.GetSelectionMark();
 	if(selectIndex<0)
 		return;
-	if(IDYES== MessageBox("是否删除当前选中的机型零件记录?","提示",MB_YESNO))
+	if(IDYES== MessageBox("是否删除当前选中的机型零件记录?\nWhether to delete this record?","提示(Notify)",MB_YESNO))
 	{
 		CString strTemp;
 		CarTypePartsTableInfo tempInfo;

@@ -56,6 +56,7 @@ typedef	struct	tagCarPartTableInfo
 	char	csPicNum[32];
 	char	csInstallNum[32];
 	int		iInstallMark;
+	std::string strPartReserve;
 
 	tagCarPartTableInfo()
 	{
@@ -74,6 +75,7 @@ typedef	struct	tagCarPartTableInfo
 		memset(csPicNum,0,sizeof(csPicNum));
 		memset(csInstallNum,0,sizeof(csInstallNum));
 		iInstallMark = 0;
+		strPartReserve.clear();
 	}
 
 	void Copy(tagCarPartTableInfo& info){
@@ -88,6 +90,7 @@ typedef	struct	tagCarPartTableInfo
 		strcpy(csPicNum,info.csPicNum);
 		strcpy(csInstallNum,info.csInstallNum);
 		iInstallMark = info.iInstallMark;
+		strPartReserve = info.strPartReserve;
 	}
 }CarPartTableInfo,*PCarPartTableInfo;
 
@@ -122,6 +125,7 @@ typedef struct tagSearchCarTypePartsInfo
 	char	csMMCNum[32];
 	char	csChineseName[64];
 	int		iLevel;
+	std::string strPartReserve;
 
 	tagSearchCarTypePartsInfo()
 	{
@@ -137,6 +141,7 @@ typedef struct tagSearchCarTypePartsInfo
 		memset(csMMCNum,0,sizeof(csMMCNum));
 		memset(csChineseName,0,sizeof(csChineseName));
 		iLevel = 0;
+		strPartReserve.clear();
 	}
 }SearchCarTypePartsInfo,*PSearchCarTypePartsInfo;
 

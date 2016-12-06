@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "QuerySuppTypesDlg.h"
+#include "ListCtrlExtention.h"
 using namespace std;
 // CCarPartInfoQueryDlg dialog
 class CCarInfoSearchDlg;
@@ -24,7 +25,7 @@ public:
 	afx_msg void OnSmenuCarPartmodify();
 	afx_msg void OnSmenuCarPartqueryCarType();
 	virtual BOOL OnInitDialog();
-	CListCtrl m_CarPartinfolist;
+	CListCtrlExtention m_CarPartinfolist;
 	afx_msg void OnBnClickedBtnMtQCarPartinfo();
 	afx_msg void OnBnClickedButtonQCarTypebefore();
 	afx_msg void OnBnClickedButtonQCarTypenext();

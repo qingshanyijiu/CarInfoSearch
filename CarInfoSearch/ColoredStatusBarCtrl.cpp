@@ -55,7 +55,7 @@ void CColoredStatusBarCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			dc.SetTextColor(RGB(255, 0, 0));
 			break;
 		case 2:
-			dc.SetTextColor(RGB(0, 0, 255));
+			dc.SetTextColor(RGB(0, 1, 133));
 			break;
 	}
 

@@ -110,6 +110,8 @@
     <ClInclude Include="CarPartInfoQueryDlg.h" />
     <ClInclude Include="ColoredStatusBarCtrl.h" />
     <ClInclude Include="FileModifyDlg.h" />
+    <ClInclude Include="HeaderCtrlExt.h" />
+    <ClInclude Include="ListCtrlExtention.h" />
     <ClInclude Include="LoadDataDlg.h" />
     <ClInclude Include="LoginDlg.h" />
     <ClInclude Include="PWDModifyDlg.h" />
@@ -118,6 +120,7 @@
     <ClInclude Include="QuerySuppTypesDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SysAboutDlg.h" />
     <ClInclude Include="SystemSetDlg.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="CarTypeInfoDlg.h" />
@@ -131,6 +134,8 @@
     <ClCompile Include="CarPartInfoQueryDlg.cpp" />
     <ClCompile Include="ColoredStatusBarCtrl.cpp" />
     <ClCompile Include="FileModifyDlg.cpp" />
+    <ClCompile Include="HeaderCtrlExt.cpp" />
+    <ClCompile Include="ListCtrlExtention.cpp" />
     <ClCompile Include="LoadDataDlg.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
     <ClCompile Include="PWDModifyDlg.cpp" />
@@ -141,6 +146,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SysAboutDlg.cpp" />
     <ClCompile Include="SystemSetDlg.cpp" />
     <ClCompile Include="CarTypeInfoDlg.cpp" />
     <ClCompile Include="CarTypeMngQueryDlg.cpp" />

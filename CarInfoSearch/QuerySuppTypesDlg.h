@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "ListCtrlExtention.h"
 using namespace std;
 
 
@@ -36,6 +37,6 @@ public:
 	virtual void OnOK();
 	virtual void OnCancel();
 	afx_msg void OnClose();
-	CListCtrl m_suppCarTypeList;
+	CListCtrlExtention m_suppCarTypeList;
 	afx_msg void OnBnClickedOk();
 };

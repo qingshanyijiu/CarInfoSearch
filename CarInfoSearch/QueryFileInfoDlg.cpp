@@ -64,9 +64,15 @@ BOOL CQueryFileInfoDlg::OnInitDialog()
 	dwStyle |= LVS_EX_GRIDLINES;//网格线（只适用与report风格的listctrl）
 	//dwStyle |= LVS_EX_CHECKBOXES;//item前生成checkbox控件
 	m_fileInfoList.SetExtendedStyle(dwStyle); //设置扩展风格
-	m_fileInfoList.InsertColumn( 0, "文件名", LVCFMT_LEFT, 400 );
-	m_fileInfoList.InsertColumn( 1, "机型编号", LVCFMT_LEFT, 150 );
-	m_fileInfoList.InsertColumn( 3, "备注", LVCFMT_LEFT, 300 );
+
+	int iWidth = m_fileInfoList.GetListWidth();
+	m_fileInfoList.InsertColumn( 0, "文件名\nFileName", LVCFMT_LEFT, (int)(iWidth*0.5) );
+	m_fileInfoList.InsertColumn( 1, "机型编号\nTypeNum", LVCFMT_LEFT, (int)(iWidth*0.1) );
+	m_fileInfoList.InsertColumn( 3, "备注\nFileNotes", LVCFMT_LEFT, (int)(iWidth*0.3) );
+
+	m_fileInfoList.InitHead();
+	m_fileInfoList.SetMouseWheelCallFunc(std::tr1::bind(&CQueryFileInfoDlg::OnBnClickedButtonFileBefore, this),
+		std::tr1::bind(&CQueryFileInfoDlg::OnBnClickedButtonFileNext, this));
 
 	HIMAGELIST himlSmall;
 	HIMAGELIST himlLarge;
@@ -125,6 +131,12 @@ BOOL CQueryFileInfoDlg::PreTranslateMessage(MSG* pMsg)
 			return true;
 		case VK_RETURN: //Enter按键事件
 			OnBnClickedButtonFileSearch();
+			return true;
+		case VK_PRIOR:
+			OnBnClickedButtonFileBefore();
+			return true;
+		case VK_NEXT:
+			OnBnClickedButtonFileNext();
 			return true;
 		default:
 			;
@@ -395,7 +407,7 @@ void CQueryFileInfoDlg::OnSmenuFileDelete()
 	int selectIndex = m_fileInfoList.GetSelectionMark();
 	if(selectIndex<0)
 		return;
-	if(IDYES== MessageBox("是否删除当前选中的车型资料信息?","提示",MB_YESNO))
+	if(IDYES== MessageBox("是否删除当前选中的车型资料信息?\nWhether to delete this record?","提示(Notify)",MB_YESNO))
 	{
 		CString strName = m_fileInfoList.GetItemText(selectIndex,0);
 		if(OPERATE_DB_SUCCESS == DeleteCarFileData(strName))

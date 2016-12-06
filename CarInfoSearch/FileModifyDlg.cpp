@@ -183,7 +183,7 @@ void CFileModifyDlg::SetOperateType(BYTE bType,PCarFileData pInfo)
 			GetDlgItem(IDC_EDIT_FILE_ADD_FILEPATH)->SetWindowText("");
 			GetDlgItem(IDC_EDIT_FILE_ADD_NOTES)->SetWindowText("");
 
-			m_fielModifyButton.SetWindowText("增加");
+			m_fielModifyButton.SetWindowText("增加\nAdd");
 			m_fielModifyButton.ShowWindow(SW_SHOW);
 			m_fileSelectButton.ShowWindow(SW_SHOW);
 			m_fileReturnButton.ShowWindow(SW_HIDE);
@@ -205,7 +205,7 @@ void CFileModifyDlg::SetOperateType(BYTE bType,PCarFileData pInfo)
 
 			if(OPERATE_TYPE_MODIFY == m_bOperateType)
 			{
-				m_fielModifyButton.SetWindowText("修改");
+				m_fielModifyButton.SetWindowText("修改\nModify");
 				m_fielModifyButton.ShowWindow(SW_SHOW);
 			}
 			else
@@ -223,7 +223,7 @@ void CFileModifyDlg::OnBnClickedButtonFileReturn()
 	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
 	if (OPERATE_TYPE_MODIFY == m_bOperateType)
 	{
-		if(IDYES== MessageBox("确定要放弃修改数据?","提示",MB_YESNO))
+		if(IDYES== MessageBox("确定要放弃修改数据?\nWhether to give up modification?","提示(Notify)",MB_YESNO))
 		{
 			g_pMainDlg->RightPageShow(IDD_DIALOG_FILE_QUERY);
 		}

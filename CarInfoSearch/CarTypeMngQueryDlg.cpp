@@ -36,12 +36,15 @@ ON_NOTIFY(NM_DBLCLK, IDC_LIST_CarTypeList, &CCarTypeMngQueryDlg::OnDblclkListCar
 ON_COMMAND(ID_SMENU_CarTypeDelete, &CCarTypeMngQueryDlg::OnSmenuCarTypedelete)
 ON_COMMAND(ID_SMENU_CarTypeDetail, &CCarTypeMngQueryDlg::OnSmenuCarTypedetail)
 ON_COMMAND(ID_SMENU_CarTypeModify, &CCarTypeMngQueryDlg::OnSmenuCarTypemodify)
+ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 // CCarTypeMngQueryDlg 消息处理程序
 void CCarTypeMngQueryDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
 }
+
+
 BOOL CCarTypeMngQueryDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -56,12 +59,19 @@ BOOL CCarTypeMngQueryDlg::OnInitDialog()
 	dwStyle |= LVS_EX_GRIDLINES;//网格线（只适用与report风格的listctrl）
 	//dwStyle |= LVS_EX_CHECKBOXES;//item前生成checkbox控件
 	m_CarTypeList.SetExtendedStyle(dwStyle); //设置扩展风格
-	m_CarTypeList.InsertColumn( 0, "机型编号", LVCFMT_LEFT, 80 );
-	m_CarTypeList.InsertColumn( 1, "发动机编号", LVCFMT_LEFT, 150 );
-	m_CarTypeList.InsertColumn( 2, "车厂名称", LVCFMT_LEFT, 120 );
-	m_CarTypeList.InsertColumn( 3, "机型状态", LVCFMT_LEFT, 120 );
-	m_CarTypeList.InsertColumn( 4, "车型名称", LVCFMT_LEFT, 150 );
-	m_CarTypeList.InsertColumn( 5, "备注", LVCFMT_LEFT, 370 );
+
+	int iWidth = m_CarTypeList.GetListWidth();
+	m_CarTypeList.InsertColumn( 0, "机型编号\nTypeNum", LVCFMT_LEFT, (int)(iWidth*0.1) );
+	m_CarTypeList.InsertColumn( 1, "发动机编号\nEngineNum", LVCFMT_LEFT, (int)(iWidth*0.15)  );
+	m_CarTypeList.InsertColumn( 2, "车厂名称\nDepotName", LVCFMT_LEFT, (int)(iWidth*0.12)  );
+	m_CarTypeList.InsertColumn( 3, "机型状态\nTypeStatus", LVCFMT_LEFT, (int)(iWidth*0.12)  );
+	m_CarTypeList.InsertColumn( 4, "车型名称\nTypeName", LVCFMT_LEFT, (int)(iWidth*0.15)  );
+	m_CarTypeList.InsertColumn( 5, "备注\nTypeNotes", LVCFMT_LEFT,(int)(iWidth*0.36)  );
+
+	m_CarTypeList.InitHead();
+	m_CarTypeList.SetMouseWheelCallFunc(std::tr1::bind(&CCarTypeMngQueryDlg::OnBnClickedButtonQCarTypebefore, this),
+		std::tr1::bind(&CCarTypeMngQueryDlg::OnBnClickedButtonQCarTypenext, this));
+
 
 	m_curPageIndex = 0;
 	m_iTotalRecord = 0;
@@ -229,7 +239,7 @@ void CCarTypeMngQueryDlg::OnSmenuCarTypedelete()
 	int selectIndex = m_CarTypeList.GetSelectionMark();
 	if(selectIndex<0)
 		return;
-	if(IDYES== MessageBox("是否删除当前选中的机型信息?","提示",MB_YESNO))
+	if(IDYES== MessageBox("是否删除当前选中的机型信息?\nWhether to delete this record?","提示(Notify)",MB_YESNO))
 	{
 		CString strTemp = m_CarTypeList.GetItemText(selectIndex,1);
 		if(OPERATE_DB_SUCCESS ==  DeleteCarTypeInfo(strTemp.operator LPCSTR()))
@@ -295,7 +305,7 @@ void CCarTypeMngQueryDlg::UpdateDataInfo()
 	//更新内容
 	m_CarTypeList.DeleteAllItems();
 	int nRow;
-
+	
 	for(int i = 0 ; i < m_CarTypeInfoVect.size() ; ++i) 
 	{ 
 		nRow = m_CarTypeList.InsertItem(i, m_CarTypeInfoVect[i].csCarTypeNum);//插入行
@@ -323,6 +333,13 @@ BOOL CCarTypeMngQueryDlg::PreTranslateMessage(MSG* pMsg)
 		case VK_RETURN: //Enter按键事件
 			OnBnClickedBtnCarTypeCarTypequery();
 			return true;
+		case VK_PRIOR:
+			OnBnClickedButtonQCarTypebefore();
+			return true;
+		case VK_NEXT:
+			OnBnClickedButtonQCarTypenext();
+			return true;
+
 		default:
 			;
 		}
@@ -345,4 +362,14 @@ LRESULT CCarTypeMngQueryDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPar
 	}
 
 	return CDialogEx::WindowProc(message, wParam, lParam);
+}
+
+
+BOOL CCarTypeMngQueryDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+
+
+
+	return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
 }

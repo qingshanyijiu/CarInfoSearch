@@ -21,7 +21,7 @@ int CCarPartTable::InitTable()
 	if (SQLITE_OK != iRes)
 	{
 		const char* lpTableInfoSql = "CREATE TABLE CarPartInfo (CarTypeNum TEXT,DAENum TEXT,MMCNum TEXT,EPLNum TEXT,VCNum TEXT,Level INT,\
-									 EnglishName TEXT,ChineseName TEXT,PicNum TEXT,InstallNum TEXT,InstallMark INI,PRIMARY KEY (CarTypeNum,DAENum,MMCNum));";
+									 EnglishName TEXT,ChineseName TEXT,PicNum TEXT,InstallNum TEXT,InstallMark INI,PartReserve TEXT,PRIMARY KEY (CarTypeNum,DAENum,MMCNum));";
 		iRes = m_pDbBase->m_dbOp.execute_dml(lpTableInfoSql);
 	}
 
@@ -44,7 +44,8 @@ int	CCarPartTable::InsertCarPartInfo(const PCarPartTableInfo	pInfo)
 	sql<<pInfo->csChineseName<<"','";
 	sql<<pInfo->csPicNum<<"','";
 	sql<<pInfo->csInstallNum<<"',";
-	sql<<pInfo->iInstallMark<<");";
+	sql<<pInfo->iInstallMark<<",'";
+	sql<<pInfo->strPartReserve<<"');";
 
 	iRes = m_pDbBase->m_dbOp.execute(sql.str().c_str(), NULL, NULL, NULL);
 
@@ -65,7 +66,8 @@ int	CCarPartTable::UpdateCarPartInfo(PCarPartTableInfo	pInfo)
 	sql<<"ChineseName='"<<pInfo->csChineseName<<"',";
 	sql<<"PicNum='"<<pInfo->csPicNum<<"',";
 	sql<<"InstallNum='"<<pInfo->csInstallNum<<"',";
-	sql<<"InstallMark="<<pInfo->iInstallMark<<" ";
+	sql<<"InstallMark="<<pInfo->iInstallMark<<",";
+	sql<<"PartReserve='"<<pInfo->strPartReserve<<"'";
 	sql<<" where CarTypeNum='"<<pInfo->csCarTypeNum<<"' and DAENum='"<<pInfo->csDAENum<<"' and MMCNum='"<<pInfo->csMMCNum<<"';";
 
 	iRes = m_pDbBase->m_dbOp.execute(sql.str().c_str(), NULL, NULL, NULL);
@@ -81,7 +83,8 @@ int CCarPartTable::GetCarPartCount(const PCarPartTableInfo pInfo,int* pTotalCoun
 	sql<<" DAENum like '%"<<pInfo->csDAENum<<"%' and ";
 	sql<<" MMCNum like '%"<<pInfo->csMMCNum<<"%' and ";
 	sql<<" PicNum like '%"<<pInfo->csPicNum<<"%' and ";
-	sql<<" ChineseName like '%"<<pInfo->csChineseName<<"%';";
+	sql<<" ChineseName like '%"<<pInfo->csChineseName<<"%' and ";
+	sql<<" PartReserve like '%"<<pInfo->strPartReserve<<"%';";
 
 	int iCount = GetRecordCount(sql.str().c_str());
 	if (pTotalCount)
@@ -101,7 +104,8 @@ int CCarPartTable::GetCarPartInfo(const PCarPartTableInfo pInfo,int iPages,int i
 	sql<<" DAENum like '%"<<pInfo->csDAENum<<"%' and ";
 	sql<<" MMCNum like '%"<<pInfo->csMMCNum<<"%' and ";
 	sql<<" PicNum like '%"<<pInfo->csPicNum<<"%' and ";
-	sql<<" ChineseName like '%"<<pInfo->csChineseName<<"%' ";
+	sql<<" ChineseName like '%"<<pInfo->csChineseName<<"%' and ";
+	sql<<" PartReserve like '%"<<pInfo->strPartReserve<<"%' ";
 
 	sql<<" order by CarTypeNum,DAENum,MMCNum ";
 	if (false == bOrderInc)
@@ -200,6 +204,12 @@ int CCarPartTable::GetCarPartInfoDataHandle(void * lpPara, int nColumn, char ** 
 		if (0== strcmp(lppColumnName[i],"InstallMark"))
 		{
 			tempInfo.iInstallMark = atoi(lppColumnValue[i]);
+			continue;
+		}
+
+		if (0 == strcmp(lppColumnName[i],"PartReserve"))
+		{
+			tempInfo.strPartReserve = convertChar.ToGBK(lppColumnValue[i]);
 		}
 	}
 

@@ -97,13 +97,17 @@ void CCarPartInfoDlg::OnBnClickedBtnCarPartadd()
 	strTemp.Trim();
 	strncpy(m_CarPartInfo.csInstallNum,strTemp.operator LPCSTR(),32);
 
+	GetDlgItemText(IDC_EDIT_CP_ADD_PartReserve,strTemp);
+	strTemp.Trim();
+	m_CarPartInfo.strPartReserve = strTemp;
+
 	if (OPERATE_TYPE_ADD == m_bOperateType)
 	{
 		if(OPERATE_DB_SUCCESS  ==InsertCarPartInfo(&m_CarPartInfo))
 		{
 			CCarInfoSearchDlg::ShowOperateInfo("插入零件信息成功！");
 
-			if(IDYES== MessageBox("\t   现在是否需要增加\n\r\t支持该零件的发动机信息?","提示",MB_YESNO))
+			if(IDYES== MessageBox("\t   现在是否需要增加\n\r\t支持该零件的发动机信息?\n\t Now whether to add type info support this part?","提示(Notify)",MB_YESNO))
 			{
 				m_queryTypeDlg.SetCartPartInfo(&m_CarPartInfo,OPERATE_TYPE_ADD);
 				m_queryTypeDlg.DoModal();
@@ -120,6 +124,7 @@ void CCarPartInfoDlg::OnBnClickedBtnCarPartadd()
 			m_editMMCNum.SetWindowText("");
 			m_editPicNum.SetWindowText("");
 			m_editVCNum.SetWindowText("");
+			SetDlgItemText(IDC_EDIT_CP_ADD_PartReserve,"");
 		}
 		else
 		{
@@ -132,7 +137,7 @@ void CCarPartInfoDlg::OnBnClickedBtnCarPartadd()
 		{
 			CCarInfoSearchDlg::ShowOperateInfo("修改零件信息成功！");
 
-			if(IDYES== MessageBox("\t   现在是否需要修改\n\r\t支持该零件的发动机信息?","提示",MB_YESNO))
+			if(IDYES== MessageBox("\t  现在是否需要修改\n\r\t支持该零件的发动机信息?\n\tNow whether to give up modify the types? ","提示(Notify)",MB_YESNO))
 			{
 				m_queryTypeDlg.SetCartPartInfo(&m_CarPartInfo,OPERATE_TYPE_MODIFY);
 				m_queryTypeDlg.DoModal();
@@ -168,8 +173,9 @@ void CCarPartInfoDlg::SetOperateType(BYTE bType,PCarPartTableInfo pInfo/*=NULL*/
 			m_editMMCNum.SetWindowText("");
 			m_editPicNum.SetWindowText("");
 			m_editVCNum.SetWindowText("");
+			SetDlgItemText(IDC_EDIT_CP_ADD_PartReserve,"");
 
-			m_AddModifyButton.SetWindowText("增加");
+			m_AddModifyButton.SetWindowText("增加\nAdd");
 			m_AddModifyButton.ShowWindow(SW_SHOW);
 			m_modifyReturnButton.ShowWindow(SW_HIDE);
 
@@ -196,6 +202,7 @@ void CCarPartInfoDlg::SetOperateType(BYTE bType,PCarPartTableInfo pInfo/*=NULL*/
 			m_editMMCNum.SetWindowText(pInfo->csMMCNum);
 			m_editPicNum.SetWindowText(pInfo->csPicNum);
 			m_editVCNum.SetWindowText(pInfo->csVCNum);
+			SetDlgItemText(IDC_EDIT_CP_ADD_PartReserve,pInfo->strPartReserve.c_str());
 
 			m_modifyReturnButton.ShowWindow(SW_SHOW);
 
@@ -207,7 +214,7 @@ void CCarPartInfoDlg::SetOperateType(BYTE bType,PCarPartTableInfo pInfo/*=NULL*/
 			if(OPERATE_TYPE_MODIFY == m_bOperateType)
 			{
 				m_AddModifyButton.ShowWindow(SW_SHOW);
-				m_AddModifyButton.SetWindowText("修改");
+				m_AddModifyButton.SetWindowText("修改\nModify");
 			}
 			else
 			{
@@ -261,7 +268,7 @@ void CCarPartInfoDlg::OnBnClickedButtonCpModifyReturn()
 
 	if (OPERATE_TYPE_MODIFY == m_bOperateType)
 	{
-		if(IDYES== MessageBox("确定要放弃修改数据?","提示",MB_YESNO))
+		if(IDYES== MessageBox("确定要放弃修改数据?\nWhether to give up modification?","提示(Notify)",MB_YESNO))
 		{
 			g_pMainDlg->RightPageShow(IDD_MaintenanceMng_QUERY_Dlg);
 		}

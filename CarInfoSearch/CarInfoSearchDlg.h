@@ -79,4 +79,5 @@ public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
 	afx_msg void OnBnClickedButtonnCarTypePartsQuery();
+	afx_msg void OnBnClickedButtonFileManager();
 };

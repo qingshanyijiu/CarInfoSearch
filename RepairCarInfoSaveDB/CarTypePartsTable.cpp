@@ -160,7 +160,8 @@ int CCarTypePartsTable::GetCarTypePartsCount(const PSearchCarTypePartsInfo pInfo
 	sql<<" CarPartInfo.CarTypeNum like '%"<<pInfo->csCarTypeNum<<"%' and";
 	sql<<" CarPartInfo.DAENum like '%"<<pInfo->csDAENum<<"%' and ";
 	sql<<" CarPartInfo.MMCNum like '%"<<pInfo->csMMCNum<<"%' and ";
-	sql<<" CarPartInfo.ChineseName like '%"<<pInfo->csChineseName<<"%';";
+	sql<<" CarPartInfo.ChineseName like '%"<<pInfo->csChineseName<<"%' and ";
+	sql<<" CarPartInfo.PartReserve like '%"<<pInfo->strPartReserve<<"%';";
 
 	int iCount = GetRecordCount(sql.str().c_str());
 	if (pTotalCount)
@@ -176,7 +177,7 @@ int CCarTypePartsTable::GetCarTypePartsInfo(const PSearchCarTypePartsInfo pInfo,
 	int iRes = SQLITE_OK;
 	sqlstring sql;
 
-	sql<<"SELECT CarTypeInfo.CarDetailTypeNum,CarTypeInfo.CarFactory,CarTypeInfo.CarDetailName,CarPartInfo.CarTypeNum,CarPartInfo.DAENum,CarPartInfo.MMCNum,CarPartInfo.ChineseName,CarPartInfo.Level  FROM CarTypeInfo,CarPartInfo,CarTypePartsInfo \
+	sql<<"SELECT CarTypeInfo.CarDetailTypeNum,CarTypeInfo.CarFactory,CarTypeInfo.CarDetailName,CarPartInfo.CarTypeNum,CarPartInfo.DAENum,CarPartInfo.MMCNum,CarPartInfo.ChineseName,CarPartInfo.Level,CarPartInfo.PartReserve  FROM CarTypeInfo,CarPartInfo,CarTypePartsInfo \
 		where CarTypeInfo.CarDetailTypeNum=CarTypePartsInfo.CarDetailTypeNumber and CarTypePartsInfo.CarTypeNum=CarPartInfo.CarTypeNum and CarTypePartsInfo.DAENum=CarPartInfo.DAENum and CarTypePartsInfo.MMCNum=CarPartInfo.MMCNum  and ";
 	sql<<" CarTypeInfo.CarDetailTypeNum like '%"<<pInfo->csCarDetailTypeNum<<"%' and";
 	sql<<" CarTypeInfo.CarFactory like '%"<<pInfo->csCarFactory<<"%' and";
@@ -184,7 +185,8 @@ int CCarTypePartsTable::GetCarTypePartsInfo(const PSearchCarTypePartsInfo pInfo,
 	sql<<" CarPartInfo.CarTypeNum like '%"<<pInfo->csCarTypeNum<<"%' and";
 	sql<<" CarPartInfo.DAENum like '%"<<pInfo->csDAENum<<"%' and";
 	sql<<" CarPartInfo.MMCNum like '%"<<pInfo->csMMCNum<<"%' and";
-	sql<<" CarPartInfo.ChineseName like '%"<<pInfo->csChineseName<<"%'";
+	sql<<" CarPartInfo.ChineseName like '%"<<pInfo->csChineseName<<"%' and ";
+	sql<<" CarPartInfo.PartReserve like '%"<<pInfo->strPartReserve<<"%'";
 
 	sql<<" order by CarTypeInfo.CarDetailTypeNum,CarPartInfo.CarTypeNum,CarPartInfo.DAENum,CarPartInfo.MMCNum ";
 	if (false == bOrderInc)
@@ -274,6 +276,7 @@ int CCarTypePartsTable::GetCarPartsDataHandle(void * lpPara, int nColumn, char *
 	strcpy(tempCarTypeInfo.csMMCNum,lppColumnValue[5]);
 	strcpy(tempCarTypeInfo.csChineseName,convertChar.ToGBK(lppColumnValue[6]));
 	tempCarTypeInfo.iLevel = atoi(lppColumnValue[7]);
+	tempCarTypeInfo.strPartReserve=convertChar.ToGBK(lppColumnValue[8]);
 
 	pCarTypeList->push_back(tempCarTypeInfo);
 

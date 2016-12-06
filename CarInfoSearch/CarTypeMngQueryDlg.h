@@ -1,9 +1,12 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "ListCtrlExtention.h"
 using namespace std;
+
 // CCarTypeMngQueryDlg ¶Ô»°¿ò
 typedef int (*pQueryfunc)(const char* lpLicNumer,int iPages,int iMaxCount,std::vector<CarTypeTableInfo>& CarTypeInfoList,bool bOrderInc);
+
 class CCarTypeMngQueryDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CCarTypeMngQueryDlg)
@@ -24,7 +27,7 @@ public:
 	afx_msg void OnBnClickedButtonQCarTypenext();
 	CButton m_QCarTypeBeforeButton;
 	CButton m_QCarTypeNextButton;
-	CListCtrl m_CarTypeList;
+	CListCtrlExtention m_CarTypeList;
 //	afx_msg void OnLvnItemchangedListCarTypelist(NMHDR *pNMHDR, LRESULT *pResult);
 public:
 	int							m_iTotalRecord;
@@ -45,4 +48,5 @@ public:
 	afx_msg void OnSmenuCarTypequeryrepair();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };

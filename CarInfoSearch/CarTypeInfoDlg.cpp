@@ -119,7 +119,7 @@ void CCarTypeInfoDlg::SetOperateType(BYTE bType,PCarTypeTableInfo pInfo/*=NULL*/
 			m_editCarTypeNum.SetWindowText("");
 			m_editCarNotes.SetWindowText("");
 
-			m_addMotifyButton.SetWindowText("增加");
+			m_addMotifyButton.SetWindowText("增加\nAdd");
 			m_addMotifyButton.ShowWindow(SW_SHOW);
 			m_modifyReturnButton.ShowWindow(SW_HIDE);
 			m_editDetailTypeNum.SetReadOnly(FALSE);
@@ -140,7 +140,7 @@ void CCarTypeInfoDlg::SetOperateType(BYTE bType,PCarTypeTableInfo pInfo/*=NULL*/
 
 		if(OPERATE_TYPE_MODIFY == m_bOperateType)
 		{
-			m_addMotifyButton.SetWindowText("修改");
+			m_addMotifyButton.SetWindowText("修改\nModify");
 			m_addMotifyButton.ShowWindow(SW_SHOW);
 		}
 		else
@@ -195,7 +195,7 @@ void CCarTypeInfoDlg::OnBnClickedButtonCtModifyReturn()
 
 	if (OPERATE_TYPE_MODIFY == m_bOperateType)
 	{
-		if(IDYES== MessageBox("确定要放弃修改数据?","提示",MB_YESNO))
+		if(IDYES== MessageBox("确定要放弃修改数据?\nWhether to give up modification?","提示(Notify)",MB_YESNO))
 		{
 			g_pMainDlg->RightPageShow(IDD_CarTypeMNG_QUERY_DLG);
 		}

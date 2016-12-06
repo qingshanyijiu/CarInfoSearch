@@ -6,6 +6,7 @@ class CButtonExd;
 typedef std::tr1::function<void(CButtonExd*)> LBClickCallbackFunc;
 typedef LBClickCallbackFunc BeforeLBClickDealFunc;
 typedef LBClickCallbackFunc AfterLBClickDealFunc;
+
 class CButtonExd
 {
 public:
