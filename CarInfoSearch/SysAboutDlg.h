@@ -24,4 +24,5 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnClickedMfclinkOperateLook();
 	afx_msg void OnDoubleclickedMfclinkOperateLook();
+	afx_msg void OnDoubleclickedMfclinkAuthor();
 };

@@ -17,11 +17,17 @@ public:
 	int GetCarPartInfo(const PCarPartTableInfo pInfo,int iPages,int iMaxCount,std::vector<CarPartTableInfo>& carPartInfoList,bool bOrderInc=true);
 	int	DeleteCarPartInfo(const PCarPartTableInfo	pInfo);
 
+	int	ASInsertCarPartInfo(const PASCarPartTableInfo	pInfo);
+	int	ASUpdateCarPartInfo(const PASCarPartTableInfo	pInfo);
+	int ASGetCarPartCount(const PASCarPartTableInfo pInfo,int* pTotalCount);
+	int ASGetCarPartInfo(const PASCarPartTableInfo pInfo,int iPages,int iMaxCount,std::vector<ASCarPartTableInfo>& carPartInfoList,bool bOrderInc);
+	int	ASDeleteCarPartInfo(const PASCarPartTableInfo	pInfo);
+
 protected:
 	int GetCarPartData(const char* lpSql,std::vector<CarPartTableInfo>& carPartInfoList);
 
 protected:
 	static int GetCarPartInfoDataHandle(void * lpPara, int nColumn, char ** lppColumnValue, char ** lppColumnName);
-
+	static int ASGetCarPartInfoDataHandle(void * lpPara, int nColumn, char ** lppColumnValue, char ** lppColumnName);
 };
 

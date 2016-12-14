@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "RepairCarInfoSaveDB.h"
+#include "ASInfoInterface.h"
 #include "SingletonInstance.h"
 #include "RepairCarInfoSaveImpl.h"
 
@@ -165,4 +166,96 @@ int REPAIRCARINFOSAVEDB_API GetCarFileData(const PCarFileData pInfo,int iPages,i
 int	REPAIRCARINFOSAVEDB_API DeleteCarFileData(const char* lpFileName)
 {
 	return CCarInfoSaveImpl::GetInstance()->DeleteCarFileData(lpFileName);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int	REPAIRCARINFOSAVEDB_API ASInsertCarTypeInfo(const PASCarTypeTableInfo	pInfo)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASInsertCarTypeInfo(pInfo);
+}
+
+int	REPAIRCARINFOSAVEDB_API ASUpdateCarTypeInfo(const PASCarTypeTableInfo	pInfo)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASUpdateCarTypeInfo(pInfo);
+}
+
+int REPAIRCARINFOSAVEDB_API ASGetCarTypeCount(const PASCarTypeTableInfo pInfo,int* pTotalCount)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASGetCarTypeCount(pInfo,pTotalCount);
+}
+
+int REPAIRCARINFOSAVEDB_API ASGetCarTypeInfo(const PASCarTypeTableInfo pInfo,int iPages,int iMaxCount,std::vector<ASCarTypeTableInfo>& carTypeInfoList,bool bOrderInc/*=true*/)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASGetCarTypeInfo(pInfo,iPages,iMaxCount,carTypeInfoList,bOrderInc);
+}
+
+int	REPAIRCARINFOSAVEDB_API ASDeleteCarTypeInfo(const char* lpTypeNumer)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASDeleteCarTypeInfo(lpTypeNumer);
+}
+
+int	REPAIRCARINFOSAVEDB_API ASInsertCarPartInfo(const PASCarPartTableInfo	pInfo)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASInsertCarPartInfo(pInfo);
+}
+
+int	REPAIRCARINFOSAVEDB_API ASUpdateCarPartInfo(const PASCarPartTableInfo	pInfo)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASUpdateCarPartInfo(pInfo);
+}
+
+int REPAIRCARINFOSAVEDB_API ASGetCarPartCount(const PASCarPartTableInfo pInfo,int* pTotalCount)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASGetCarPartCount(pInfo,pTotalCount);
+}
+
+int REPAIRCARINFOSAVEDB_API ASGetCarPartInfo(const PASCarPartTableInfo pInfo,int iPages,int iMaxCount,std::vector<ASCarPartTableInfo>& carPartInfoList,bool bOrderInc)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASGetCarPartInfo(pInfo,iPages,iMaxCount,carPartInfoList,bOrderInc);
+}
+
+int	REPAIRCARINFOSAVEDB_API ASDeleteCarPartInfo(const PASCarPartTableInfo	pInfo)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASDeleteCarPartInfo(pInfo);
+}
+
+int	REPAIRCARINFOSAVEDB_API ASInsertCarTypePartsInfo(const PASCarTypePartsTableInfo pInfo,std::vector<std::string>& carTypeInfoList)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASInsertCarTypePartsInfo(pInfo,carTypeInfoList);
+}
+
+int	REPAIRCARINFOSAVEDB_API ASUpdateCarTypePartsInfo(const PASCarTypePartsTableInfo pInfo,std::vector<std::string>& carTypeInfoList)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASUpdateCarTypePartsInfo(pInfo,carTypeInfoList);
+}
+
+int REPAIRCARINFOSAVEDB_API ASGetCarTypePartsAllInfo(std::vector<ASCarTypeTableInfo>& carTypeInfoList)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASGetCarTypePartsAllInfo(carTypeInfoList);
+}
+
+int REPAIRCARINFOSAVEDB_API ASGetCarTypePartsSuppInfo(const PASCarTypePartsTableInfo pInfo,std::vector<ASCarTypeTableInfo>& carTypeInfoList)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASGetCarTypePartsSuppInfo(pInfo,carTypeInfoList);
+}
+
+int REPAIRCARINFOSAVEDB_API ASGetCarTypePartsSuppInfoEx(const PASCarTypePartsTableInfo pInfo,std::vector<ASCarTypeTableInfo>& carTypeInfoList)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASGetCarTypePartsSuppInfoEx(pInfo,carTypeInfoList);
+}
+
+int REPAIRCARINFOSAVEDB_API ASGetCarTypePartsCount(const PASSearchCarTypePartsInfo pInfo,int* pTotalCount)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASGetCarTypePartsCount(pInfo,pTotalCount);
+}
+
+int REPAIRCARINFOSAVEDB_API ASGetCarTypePartsInfo(const PASSearchCarTypePartsInfo pInfo,int iPages,int iMaxCount,std::vector<ASSearchCarTypePartsInfo>& carTypePartInfoList,bool bOrderInc)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASGetCarTypePartsInfo(pInfo,iPages,iMaxCount,carTypePartInfoList,bOrderInc);
+}
+
+int	REPAIRCARINFOSAVEDB_API ASDeleteCarTypePartsInfo(const PASCarTypePartsTableInfo pInfo)
+{
+	return CCarInfoSaveImpl::GetInstance()->ASDeleteCarTypePartsInfo(pInfo);
 }

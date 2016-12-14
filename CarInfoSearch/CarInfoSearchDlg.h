@@ -80,4 +80,10 @@ public:
 	afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
 	afx_msg void OnBnClickedButtonnCarTypePartsQuery();
 	afx_msg void OnBnClickedButtonFileManager();
+	afx_msg void OnBnClickedButtonAsMainQueryMutil();
+	afx_msg void OnBnClickedButtonAsMainQueryType();
+	afx_msg void OnBnClickedButtonAsMainQueryPart();
+	afx_msg void OnBnClickedBtnCartypemodify2();
+	afx_msg void OnBnClickedButtonAsMainAddType();
+	afx_msg void OnBnClickedButtonAsMainAddPart();
 };

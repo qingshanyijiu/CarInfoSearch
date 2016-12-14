@@ -297,3 +297,167 @@ int CCarInfoSaveImpl::DeleteCarFileData(const char* lpFileName)
 	CCriticalLock::CAutoLock lock(m_dbLock);
 	return m_pCarFileOp->DeleteCarFileData(lpFileName);
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////*************************************************////////////////////////////////
+
+int	CCarInfoSaveImpl::ASInsertCarTypeInfo(PASCarTypeTableInfo	pInfo)
+{
+	if (NULL == m_pCarTypeOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypeOp->ASInsertCarTypeInfo(pInfo);
+}
+
+int	CCarInfoSaveImpl::ASUpdateCarTypeInfo(PASCarTypeTableInfo	pInfo)
+{
+	if (NULL == m_pCarTypeOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypeOp->ASUpdateCarTypeInfo(pInfo);
+}
+
+int CCarInfoSaveImpl::ASGetCarTypeCount(const PASCarTypeTableInfo pInfo,int* pTotalCount)
+{
+	if (NULL == m_pCarTypeOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypeOp->ASGetCarTypeCount(pInfo,pTotalCount);
+}
+
+int CCarInfoSaveImpl::ASGetCarTypeInfo(const PASCarTypeTableInfo pInfo,int iPages,int iMaxCount,std::vector<ASCarTypeTableInfo>& carTypeInfoList,bool bOrderInc/*=true*/)
+{
+	if (NULL == m_pCarTypeOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypeOp->ASGetCarTypeInfo(pInfo,iPages,iMaxCount,carTypeInfoList,bOrderInc);
+}
+
+int	CCarInfoSaveImpl::ASDeleteCarTypeInfo(const char* lpTypeNumer)
+{
+	if (NULL == m_pCarTypeOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypeOp->ASDeleteCarTypeInfo(lpTypeNumer);
+}
+
+int	CCarInfoSaveImpl::ASInsertCarPartInfo(PASCarPartTableInfo	pInfo)
+{
+	if (NULL == m_pCarPartOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarPartOp->ASInsertCarPartInfo(pInfo);
+}
+
+int	CCarInfoSaveImpl::ASUpdateCarPartInfo(PASCarPartTableInfo	pInfo)
+{
+	if (NULL == m_pCarPartOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarPartOp->ASUpdateCarPartInfo(pInfo);
+}
+
+int CCarInfoSaveImpl::ASGetCarPartCount(const PASCarPartTableInfo pInfo,int* pTotalCount)
+{
+	if (NULL == m_pCarPartOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarPartOp->ASGetCarPartCount(pInfo,pTotalCount);
+}
+
+int CCarInfoSaveImpl::ASGetCarPartInfo(const PASCarPartTableInfo pInfo,int iPages,int iMaxCount,std::vector<ASCarPartTableInfo>& carPartInfoList,bool bOrderInc/* =true */)
+{
+	if (NULL == m_pCarPartOp)
+		return OPERATE_DB_ERROR;
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarPartOp->ASGetCarPartInfo(pInfo,iPages,iMaxCount,carPartInfoList,bOrderInc);
+}
+
+int	CCarInfoSaveImpl::ASDeleteCarPartInfo(const PASCarPartTableInfo	pInfo)
+{
+	if (NULL == m_pCarPartOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarPartOp->ASDeleteCarPartInfo(pInfo);
+}
+
+int	CCarInfoSaveImpl::ASInsertCarTypePartsInfo(const PASCarTypePartsTableInfo pInfo,std::vector<std::string>& carTypeInfoList)
+{
+	if (NULL ==m_pCarTypePartsOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypePartsOp->ASInsertCarTypePartsInfo(pInfo,carTypeInfoList);
+}
+
+int	CCarInfoSaveImpl::ASUpdateCarTypePartsInfo(const PASCarTypePartsTableInfo pInfo,std::vector<std::string>& carTypeInfoList)
+{
+	if (NULL ==m_pCarTypePartsOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypePartsOp->ASUpdateCarTypePartsInfo(pInfo,carTypeInfoList);
+}
+
+int CCarInfoSaveImpl::ASGetCarTypePartsAllInfo(std::vector<ASCarTypeTableInfo>& carTypeInfoList)
+{
+	if (NULL ==m_pCarTypePartsOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypePartsOp->ASGetCarTypePartsAllInfo(carTypeInfoList);
+}
+
+int CCarInfoSaveImpl::ASGetCarTypePartsSuppInfo(const PASCarTypePartsTableInfo pInfo,std::vector<ASCarTypeTableInfo>& carTypeInfoList)
+{
+	if (NULL ==m_pCarTypePartsOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypePartsOp->ASGetCarTypePartsSuppInfo(pInfo,carTypeInfoList);
+}
+
+int CCarInfoSaveImpl::ASGetCarTypePartsSuppInfoEx(const PASCarTypePartsTableInfo pInfo,std::vector<ASCarTypeTableInfo>& carTypeInfoList)
+{
+	if (NULL ==m_pCarTypePartsOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypePartsOp->ASGetCarTypePartsSuppInfoEx(pInfo,carTypeInfoList);
+}
+
+int CCarInfoSaveImpl::ASGetCarTypePartsCount(const PASSearchCarTypePartsInfo pInfo,int* pTotalCount)
+{
+	if (NULL ==m_pCarTypePartsOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypePartsOp->ASGetCarTypePartsCount(pInfo,pTotalCount);
+}
+
+int CCarInfoSaveImpl::ASGetCarTypePartsInfo(const PASSearchCarTypePartsInfo pInfo,int iPages,int iMaxCount,std::vector<ASSearchCarTypePartsInfo>& carTypePartInfoList,bool bOrderInc/*=true*/)
+{
+	if (NULL ==m_pCarTypePartsOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypePartsOp->ASGetCarTypePartsInfo(pInfo,iPages,iMaxCount,carTypePartInfoList,bOrderInc);
+}
+
+int	CCarInfoSaveImpl::ASDeleteCarTypePartsInfo(const PASCarTypePartsTableInfo pInfo)
+{
+	if (NULL ==m_pCarTypePartsOp)
+		return OPERATE_DB_ERROR;
+
+	CCriticalLock::CAutoLock lock(m_dbLock);
+	return m_pCarTypePartsOp->ASDeleteCarTypePartsInfo(pInfo);
+}

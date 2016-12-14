@@ -4,6 +4,7 @@
 #include "SingletonInstance.h"
 #include <string>
 #include "RepairCarInfoSaveDB.h"
+#include "ASInfoInterface.h"
 #include <list>
 #include <vector>
 typedef std::vector<pair<const std::string,std::list< std::string> > > RetDataType;

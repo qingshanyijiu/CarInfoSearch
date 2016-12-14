@@ -38,25 +38,15 @@
 #include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
 
 
+
 #pragma warning(disable:4996)
 
 
 #include "../RepairCarInfoSaveDB/RepairCarInfoSaveDB.h"
 #include "../RepairCarInfoSaveDB/ASInfoInterface.h"
 
-#define	 OPERATE_TYPE_ADD		(0)
-#define  OPERATE_TYPE_MODIFY	(1)
-#define  OPERATE_TYPE_SHOW		(2)
-#define  OPERATE_TYPE_SHOW_EX	(3)
 
-#define  MAX_QUERY_COUNT		(30)
 
-#define  WM_USER_UPDATE			(WM_USER+100)
-
-#define  USER_POWER_MODIFY			(0x0002)
-#define  USER_POWER_FILE_MANAGER	(0x0004)
-#define  USER_POWER_LOAD_DATA		(0x0008)
-#define  USER_POWER_DATA_EX			(0x0010)
 
 
 #ifdef _UNICODE

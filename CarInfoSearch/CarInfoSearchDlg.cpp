@@ -18,6 +18,12 @@
 #include "FileModifyDlg.h"
 #include "LoadDataDlg.h"
 #include "SysAboutDlg.h"
+#include "ASModifyPartDlg.h"
+#include "ASModifyTypeDlg.h"
+#include "ASQueryMuitilDlg.h"
+#include "ASQueryTypeDlg.h"
+#include "ASQueryPartDlg.h"
+#include "CheckKeyDlg.h"
 
 
 #ifdef _DEBUG
@@ -129,7 +135,12 @@ BEGIN_MESSAGE_MAP(CCarInfoSearchDlg, CDialogEx)
 	ON_COMMAND_RANGE(IDS_STR_COMPANY,IDS_STR_OPRESULT,NULL)
 	ON_WM_CREATE()
 	ON_WM_DRAWITEM()
-	ON_BN_CLICKED(IDC_BUTTON_FILE_MANAGER, &CCarInfoSearchDlg::OnBnClickedButtonFileManager)
+ 	ON_BN_CLICKED(IDC_BUTTON_FILE_MANAGER, &CCarInfoSearchDlg::OnBnClickedButtonFileManager)
+// 	ON_BN_CLICKED(IDC_BUTTON_AS_MAIN_QUERY_MUTIL, &CCarInfoSearchDlg::OnBnClickedButtonAsMainQueryMutil)
+// 	ON_BN_CLICKED(IDC_BUTTON_AS_MAIN_QUERY_TYPE, &CCarInfoSearchDlg::OnBnClickedButtonAsMainQueryType)
+// 	ON_BN_CLICKED(IDC_BUTTON_AS_MAIN_QUERY_PART, &CCarInfoSearchDlg::OnBnClickedButtonAsMainQueryPart)
+// 	ON_BN_CLICKED(IDC_BUTTON_AS_MAIN_ADD_TYPE, &CCarInfoSearchDlg::OnBnClickedButtonAsMainAddType)
+// 	ON_BN_CLICKED(IDC_BUTTON_AS_MAIN_ADD_PART, &CCarInfoSearchDlg::OnBnClickedButtonAsMainAddPart)
 END_MESSAGE_MAP()
 // CCarInfoSearchDlg 消息处理程序
 BOOL CCarInfoSearchDlg::OnInitDialog()
@@ -152,12 +163,27 @@ BOOL CCarInfoSearchDlg::OnInitDialog()
 			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
 		}
 	}
-	// 设置此对话框的图标。当应用程序主窗口不是对话框时，框架将自动
+	*/// 设置此对话框的图标。当应用程序主窗口不是对话框时，框架将自动
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-	*/
+	
 	// TODO: 在此添加额外的初始化代码
+
+	CCheckKeyDlg checkDlg;
+	if (!checkDlg.CheckKeyPass())
+	{
+		if(IDOK == checkDlg.DoModal())
+		{
+
+		}
+		else
+		{
+			exit(0);
+			return FALSE;
+		}
+	}
+
 
 	OpenDb("CarPartInfoSave.db");
 
@@ -234,7 +260,32 @@ BOOL CCarInfoSearchDlg::OnInitDialog()
 	pWnd->Create(IDD_DIALOG_LOAD_DATA,this);
 	ShowParamDlg(pWnd,FALSE);
 	m_pages[IDD_DIALOG_LOAD_DATA] = pWnd;
-	
+
+	//航天三菱
+	pWnd = new CASQueryMuitilDlg();
+	pWnd->Create(IDD_DIALOG_AS_QUERY_MULTIL,this);
+	ShowParamDlg(pWnd,FALSE);
+	m_pages[IDD_DIALOG_AS_QUERY_MULTIL] = pWnd;
+
+	pWnd = new CASQueryTypeDlg();
+	pWnd->Create(IDD_DIALOG_AS_QUERY_TYPE,this);
+	ShowParamDlg(pWnd,FALSE);
+	m_pages[IDD_DIALOG_AS_QUERY_TYPE] = pWnd;
+
+	pWnd = new CASQueryPartDlg();
+	pWnd->Create(IDD_DIALOG_AS_QUERY_PART,this);
+	ShowParamDlg(pWnd,FALSE);
+	m_pages[IDD_DIALOG_AS_QUERY_PART] = pWnd;
+
+	pWnd = new CASModifyTypeDlg();
+	pWnd->Create(IDD_DIALOG_AS_MODIFY_TYPE,this);
+	ShowParamDlg(pWnd,FALSE);
+	m_pages[IDD_DIALOG_AS_MODIFY_TYPE] = pWnd;
+
+	pWnd = new CASModifyPartDlg();
+	pWnd->Create(IDD_DIALOG_AS_MODIFY_PART,this);
+	ShowParamDlg(pWnd,FALSE);
+	m_pages[IDD_DIALOG_AS_MODIFY_PART] = pWnd;
 	
 	int leftpad =0,toppad =-1;
 	CButtonExd *pCurrent=m_root,*pChild =NULL;
@@ -263,15 +314,47 @@ BOOL CCarInfoSearchDlg::OnInitDialog()
 	pChild->SetAfterLBClickDealFunc(std::tr1::bind(&CCarInfoSearchDlg::OnBnClickedBtnMtquery, this));
 	pCurrent->AddChild(pChild);
 
+	if (s_dwUserPower&USER_POWER_DATA_EX)
+	{
+		pCurrent=m_root;
+		GetDlgItem(IDC_BUTTON_AS_INFO_QUERY)->GetWindowRect(&PRect);
+		GetDlgItem(IDC_BUTTON_AS_INFO_QUERY)->MoveWindow(FuncMenuRC.left,FuncMenuRC.top+20,FuncMenuRC.Width(),PRect.Height());
+		pChild= new CButtonExd(this,(CButton*)GetDlgItem(IDC_BUTTON_AS_INFO_QUERY),_T("航天三菱查询管理"),IDC_BUTTON_AS_INFO_QUERY,0,toppad);	
+		pChild->SetAfterLBClickDealFunc(std::tr1::bind(&CCarInfoSearchDlg::AfterButtonClick, this,std::tr1::placeholders::_1));
+		pCurrent->AddChild(pChild);
+		pCurrent = pChild;
+
+		GetDlgItem(IDC_BUTTON_AS_MAIN_QUERY_MUTIL)->GetWindowRect(&ChildRect);
+		pChild= new CButtonExd(this,(CButton*)GetDlgItem(IDC_BUTTON_AS_MAIN_QUERY_MUTIL),_T("综合查询"),IDC_BUTTON_AS_MAIN_QUERY_MUTIL,PRect.Width()-ChildRect.Width(),toppad);
+		pChild->SetAfterLBClickDealFunc(std::tr1::bind(&CCarInfoSearchDlg::OnBnClickedButtonAsMainQueryMutil, this));
+		pCurrent->AddChild(pChild);
+		GetDlgItem(IDC_BUTTON_AS_MAIN_QUERY_TYPE)->GetWindowRect(&ChildRect);
+		pChild= new CButtonExd(this,(CButton*)GetDlgItem(IDC_BUTTON_AS_MAIN_QUERY_TYPE),_T("机型查询"),IDC_BUTTON_AS_MAIN_QUERY_TYPE,0,toppad);
+		pChild->SetAfterLBClickDealFunc(std::tr1::bind(&CCarInfoSearchDlg::OnBnClickedButtonAsMainQueryType, this));
+		pCurrent->AddChild(pChild);
+		GetDlgItem(IDC_BUTTON_AS_MAIN_QUERY_PART)->GetWindowRect(&ChildRect);
+		pChild= new CButtonExd(this,(CButton*)GetDlgItem(IDC_BUTTON_AS_MAIN_QUERY_PART),_T("配件查询"),IDC_BUTTON_AS_MAIN_QUERY_PART,0,toppad);
+		pChild->SetAfterLBClickDealFunc(std::tr1::bind(&CCarInfoSearchDlg::OnBnClickedButtonAsMainQueryPart, this));
+		pCurrent->AddChild(pChild);
+	}
+	else
+	{
+		GetDlgItem(IDC_BUTTON_AS_INFO_QUERY)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BUTTON_AS_MAIN_QUERY_MUTIL)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BUTTON_AS_MAIN_QUERY_TYPE)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BUTTON_AS_MAIN_QUERY_PART)->ShowWindow(SW_HIDE);
+	}
+
 	if (s_dwUserPower&USER_POWER_MODIFY)
 	{
 		pCurrent=m_root;
 		GetDlgItem(IDC_BTN_MTINFOMNG)->GetWindowRect(&PRect);
-		GetDlgItem(IDC_BTN_CarTypeMNG)->MoveWindow(FuncMenuRC.left,FuncMenuRC.top+20,FuncMenuRC.Width(),PRect.Height());
+		GetDlgItem(IDC_BTN_MTINFOMNG)->MoveWindow(FuncMenuRC.left,FuncMenuRC.top+20,FuncMenuRC.Width(),PRect.Height());
 		pChild= new CButtonExd(this,(CButton*)GetDlgItem(IDC_BTN_MTINFOMNG),_T("信息录入"),IDC_BTN_MTINFOMNG,0,toppad);	
 		pChild->SetAfterLBClickDealFunc(std::tr1::bind(&CCarInfoSearchDlg::AfterButtonClick, this,std::tr1::placeholders::_1));
 		pCurrent->AddChild(pChild);
 		pCurrent = pChild;
+
 		GetDlgItem(IDC_BTN_CarTypeMODIFY)->GetWindowRect(&ChildRect);
 		pChild= new CButtonExd(this,(CButton*)GetDlgItem(IDC_BTN_CarTypeMODIFY),_T("车类型信息录入"),IDC_BTN_CarTypeMODIFY,PRect.Width()-ChildRect.Width(),toppad);
 		pChild->SetAfterLBClickDealFunc(std::tr1::bind(&CCarInfoSearchDlg::OnBnClickedBtnCarTypemodify, this));
@@ -280,6 +363,24 @@ BOOL CCarInfoSearchDlg::OnInitDialog()
 		pChild= new CButtonExd(this,(CButton*)GetDlgItem(IDC_BTN_MTMODIFY),_T("配件信息录入"),IDC_BTN_MTMODIFY,0,toppad);
 		pChild->SetAfterLBClickDealFunc(std::tr1::bind(&CCarInfoSearchDlg::OnBnClickedBtnMtmodify, this));
 		pCurrent->AddChild(pChild);
+
+		if (s_dwUserPower&USER_POWER_DATA_EX)
+		{
+			GetDlgItem(IDC_BUTTON_AS_MAIN_ADD_TYPE)->GetWindowRect(&ChildRect);
+			pChild= new CButtonExd(this,(CButton*)GetDlgItem(IDC_BUTTON_AS_MAIN_ADD_TYPE),_T("航天三菱车型"),IDC_BUTTON_AS_MAIN_ADD_TYPE,0,toppad);
+			pChild->SetAfterLBClickDealFunc(std::tr1::bind(&CCarInfoSearchDlg::OnBnClickedButtonAsMainAddType, this));
+			pCurrent->AddChild(pChild);
+
+			GetDlgItem(IDC_BUTTON_AS_MAIN_ADD_PART)->GetWindowRect(&ChildRect);
+			pChild= new CButtonExd(this,(CButton*)GetDlgItem(IDC_BUTTON_AS_MAIN_ADD_PART),_T("航天三菱零件"),IDC_BUTTON_AS_MAIN_ADD_PART,0,toppad);
+			pChild->SetAfterLBClickDealFunc(std::tr1::bind(&CCarInfoSearchDlg::OnBnClickedButtonAsMainAddPart, this));
+			pCurrent->AddChild(pChild);
+		}
+		else
+		{
+			GetDlgItem(IDC_BUTTON_AS_MAIN_ADD_TYPE)->ShowWindow(SW_HIDE);
+			GetDlgItem(IDC_BUTTON_AS_MAIN_ADD_PART)->ShowWindow(SW_HIDE);
+		}
 
 		if (s_dwUserPower&USER_POWER_LOAD_DATA)
 		{
@@ -300,6 +401,8 @@ BOOL CCarInfoSearchDlg::OnInitDialog()
 		GetDlgItem(IDC_BTN_MTMODIFY)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_BUTTON_FILE_MODUFIY)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_BUTTON_FILE_LOAD)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BUTTON_AS_MAIN_ADD_TYPE)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BUTTON_AS_MAIN_ADD_PART)->ShowWindow(SW_HIDE);
 	}
 
 	if (s_dwUserPower&USER_POWER_FILE_MANAGER)
@@ -771,4 +874,48 @@ void CCarInfoSearchDlg::OnBnClickedButtonFileLoadData()
 void CCarInfoSearchDlg::OnBnClickedButtonFileManager()
 {
 	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
+}
+
+
+void CCarInfoSearchDlg::OnBnClickedButtonAsMainQueryMutil()
+{
+	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
+
+	RightPageShow(IDD_DIALOG_AS_QUERY_MULTIL);
+}
+
+
+void CCarInfoSearchDlg::OnBnClickedButtonAsMainQueryType()
+{
+	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
+	RightPageShow(IDD_DIALOG_AS_QUERY_TYPE);
+}
+
+
+void CCarInfoSearchDlg::OnBnClickedButtonAsMainQueryPart()
+{
+	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
+	RightPageShow(IDD_DIALOG_AS_QUERY_PART);
+}
+
+
+void CCarInfoSearchDlg::OnBnClickedBtnCartypemodify2()
+{
+	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
+}
+
+
+void CCarInfoSearchDlg::OnBnClickedButtonAsMainAddType()
+{
+	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
+	RightPageShow(IDD_DIALOG_AS_MODIFY_TYPE);
+	((CASModifyTypeDlg*)m_pages[IDD_DIALOG_AS_MODIFY_TYPE])->SetOperateType(OPERATE_TYPE_ADD);
+}
+
+
+void CCarInfoSearchDlg::OnBnClickedButtonAsMainAddPart()
+{
+	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
+	RightPageShow(IDD_DIALOG_AS_MODIFY_PART);
+	((CASModifyPartDlg*)m_pages[IDD_DIALOG_AS_MODIFY_PART])->SetOperateType(OPERATE_TYPE_ADD);
 }

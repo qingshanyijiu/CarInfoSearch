@@ -151,6 +151,7 @@
     <ClCompile Include="UserInfoTable.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ASInfoInterface.h" />
     <ClInclude Include="CarFileDataTable.h" />
     <ClInclude Include="CarTypePartsTable.h" />
     <ClInclude Include="CriticalLock.h" />

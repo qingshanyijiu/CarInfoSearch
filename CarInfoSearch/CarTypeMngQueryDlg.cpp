@@ -339,9 +339,6 @@ BOOL CCarTypeMngQueryDlg::PreTranslateMessage(MSG* pMsg)
 		case VK_NEXT:
 			OnBnClickedButtonQCarTypenext();
 			return true;
-
-		default:
-			;
 		}
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);

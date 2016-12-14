@@ -92,6 +92,9 @@
     <ClInclude Include="CarFileDataTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ASInfoInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ReadMe.txt" />

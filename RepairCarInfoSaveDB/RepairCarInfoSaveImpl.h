@@ -27,6 +27,7 @@ public:
 	int OpenDb(const char* lpFileName);
 	int CloseDb();
 
+public:
 	int	InsertCarTypeInfo(const PCarTypeTableInfo	pInfo);
 	int	UpdateCarTypeInfo(const PCarTypeTableInfo	pInfo);
 	int GetCarTypeCount(const PCarTypeTableInfo pInfo,int* pTotalCount);
@@ -48,6 +49,7 @@ public:
 	int GetCarTypePartsInfo(const PSearchCarTypePartsInfo pInfo,int iPages,int iMaxCount,std::vector<SearchCarTypePartsInfo>& carTypePartInfoList,bool bOrderInc=true);
 	int	DeleteCarTypePartsInfo(const PCarTypePartsTableInfo pInfo);
 
+public:
 	int InsertUserInfo(PUserPwdInfo pInfo);
 	int UpdateUserInfo(PUserPwdInfo pInfo);
 	int QueryUserInfo(PUserPwdInfo pInfo);
@@ -58,6 +60,28 @@ public:
 	int GetCarFileDataCount(const PCarFileData pInfo,int* pTotalCount);
 	int GetCarFileData(const PCarFileData pInfo,int iPages,int iMaxCount,std::vector<CarFileData>& carFileDataList,bool bOrderInc=true);
 	int	DeleteCarFileData(const char* lpFileName);
+
+public:
+	int	ASInsertCarTypeInfo(const PASCarTypeTableInfo	pInfo);
+	int	ASUpdateCarTypeInfo(const PASCarTypeTableInfo	pInfo);
+	int ASGetCarTypeCount(const PASCarTypeTableInfo pInfo,int* pTotalCount);
+	int ASGetCarTypeInfo(const PASCarTypeTableInfo pInfo,int iPages,int iMaxCount,std::vector<ASCarTypeTableInfo>& carTypeInfoList,bool bOrderInc=true);
+	int	ASDeleteCarTypeInfo(const char* lpTypeNumer);
+
+	int	ASInsertCarPartInfo(const PASCarPartTableInfo	pInfo);
+	int	ASUpdateCarPartInfo(const PASCarPartTableInfo	pInfo);
+	int ASGetCarPartCount(const PASCarPartTableInfo pInfo,int* pTotalCount);
+	int ASGetCarPartInfo(const PASCarPartTableInfo pInfo,int iPages,int iMaxCount,std::vector<ASCarPartTableInfo>& carPartInfoList,bool bOrderInc=true);
+	int	ASDeleteCarPartInfo(const PASCarPartTableInfo	pInfo);
+
+	int	ASInsertCarTypePartsInfo(const PASCarTypePartsTableInfo pInfo,std::vector<std::string>& carTypeInfoList);
+	int	ASUpdateCarTypePartsInfo(const PASCarTypePartsTableInfo pInfo,std::vector<std::string>& carTypeInfoList);
+	int ASGetCarTypePartsAllInfo(std::vector<ASCarTypeTableInfo>& carTypeInfoList);
+	int ASGetCarTypePartsSuppInfo(const PASCarTypePartsTableInfo pInfo,std::vector<ASCarTypeTableInfo>& carTypeInfoList);
+	int ASGetCarTypePartsSuppInfoEx(const PASCarTypePartsTableInfo pInfo,std::vector<ASCarTypeTableInfo>& carTypeInfoList);
+	int ASGetCarTypePartsCount(const PASSearchCarTypePartsInfo pInfo,int* pTotalCount);
+	int ASGetCarTypePartsInfo(const PASSearchCarTypePartsInfo pInfo,int iPages,int iMaxCount,std::vector<ASSearchCarTypePartsInfo>& carTypePartInfoList,bool bOrderInc=true);
+	int	ASDeleteCarTypePartsInfo(const PASCarTypePartsTableInfo pInfo);
 
 protected:
 	CDbBase*				m_pDbBase;

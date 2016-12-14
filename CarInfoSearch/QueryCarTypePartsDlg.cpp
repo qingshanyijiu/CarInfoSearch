@@ -352,7 +352,7 @@ void CQueryCarTypePartsDlg::OnSmenuCtpType()
 
 	CString strTemp;
 	CarTypeTableInfo tempInfo;
-	strncpy(tempInfo.csCarDetailTypeNum,m_carTypePartsList.GetItemText(selectIndex,0).operator LPCSTR(),16);
+	strncpy(tempInfo.csCarDetailTypeNum,m_carTypePartsList.GetItemText(selectIndex,0).operator LPCSTR(),32);
 	vector<CarTypeTableInfo>	tempVect;
 	if (OPERATE_DB_SUCCESS == GetCarTypeInfo(&tempInfo,0,MAX_QUERY_COUNT,tempVect)&&tempVect.size())
 	{
@@ -380,7 +380,7 @@ void CQueryCarTypePartsDlg::OnSmenuCtpDelete()
 	{
 		CString strTemp;
 		CarTypePartsTableInfo tempInfo;
-		strncpy(tempInfo.csCarDetailTypeNum,m_carTypePartsList.GetItemText(selectIndex,0).operator LPCSTR(),16);
+		strncpy(tempInfo.csCarDetailTypeNum,m_carTypePartsList.GetItemText(selectIndex,0).operator LPCSTR(),32);
 		strncpy(tempInfo.csCarTypeNum,m_carTypePartsList.GetItemText(selectIndex,3).operator LPCSTR(),16);
 		strncpy(tempInfo.csDAENum,m_carTypePartsList.GetItemText(selectIndex,4).operator LPCSTR(),32);
 		strncpy(tempInfo.csMMCNum,m_carTypePartsList.GetItemText(selectIndex,5).operator LPCSTR(),32);

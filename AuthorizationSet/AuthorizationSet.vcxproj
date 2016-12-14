@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{069822A1-15F1-46F8-A921-CCE2CF57D281}</ProjectGuid>
-    <RootNamespace>CarInfoSearch</RootNamespace>
+    <ProjectGuid>{0A66C901-1F38-46CB-80A9-FD948EE125FD}</ProjectGuid>
+    <RootNamespace>AuthorizationSet</RootNamespace>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -41,12 +41,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>$(ProjectName)</TargetName>
-    <OutDir>$(SolutionDir)$(Configuration)\..\bin\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\..\bin</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\..\bin\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\..\bin</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -98,82 +97,37 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="res\CarInfoSearch.ico" />
-    <None Include="res\CarInfoSearch.rc2" />
+    <None Include="res\AuthorizationSet.ico" />
+    <None Include="res\AuthorizationSet.rc2" />
+    <None Include="res\icon1.ico" />
     <None Include="res\log.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ASModifyPartDlg.h" />
-    <ClInclude Include="ASModifySuppTypeDlg.h" />
-    <ClInclude Include="ASModifyTypeDlg.h" />
-    <ClInclude Include="ASQueryMuitilDlg.h" />
-    <ClInclude Include="ASQueryPartDlg.h" />
-    <ClInclude Include="ASQueryTypeDlg.h" />
-    <ClInclude Include="ButtonExd.h" />
-    <ClInclude Include="CarInfoSearch.h" />
-    <ClInclude Include="CarInfoSearchDlg.h" />
-    <ClInclude Include="CarPartInfoDlg.h" />
-    <ClInclude Include="CarPartInfoQueryDlg.h" />
-    <ClInclude Include="CheckKeyDlg.h" />
-    <ClInclude Include="ColoredStatusBarCtrl.h" />
-    <ClInclude Include="FileModifyDlg.h" />
-    <ClInclude Include="HeaderCtrlExt.h" />
-    <ClInclude Include="ListCtrlExtention.h" />
-    <ClInclude Include="LoadDataDlg.h" />
+    <ClInclude Include="AuthorizationSet.h" />
+    <ClInclude Include="AuthorizationSetDlg.h" />
     <ClInclude Include="LoginDlg.h" />
-    <ClInclude Include="PWDModifyDlg.h" />
-    <ClInclude Include="QueryCarTypePartsDlg.h" />
-    <ClInclude Include="QueryFileInfoDlg.h" />
-    <ClInclude Include="QuerySuppTypesDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="SysAboutDlg.h" />
-    <ClInclude Include="SystemSetDlg.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="CarTypeInfoDlg.h" />
-    <ClInclude Include="CarTypeMngQueryDlg.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ASModifyPartDlg.cpp" />
-    <ClCompile Include="ASModifySuppTypeDlg.cpp" />
-    <ClCompile Include="ASModifyTypeDlg.cpp" />
-    <ClCompile Include="ASQueryMuitilDlg.cpp" />
-    <ClCompile Include="ASQueryPartDlg.cpp" />
-    <ClCompile Include="ASQueryTypeDlg.cpp" />
-    <ClCompile Include="ButtonExd.cpp" />
-    <ClCompile Include="CarInfoSearch.cpp" />
-    <ClCompile Include="CarInfoSearchDlg.cpp" />
-    <ClCompile Include="CarPartInfoDlg.cpp" />
-    <ClCompile Include="CarPartInfoQueryDlg.cpp" />
-    <ClCompile Include="CheckKeyDlg.cpp" />
-    <ClCompile Include="ColoredStatusBarCtrl.cpp" />
-    <ClCompile Include="FileModifyDlg.cpp" />
-    <ClCompile Include="HeaderCtrlExt.cpp" />
-    <ClCompile Include="ListCtrlExtention.cpp" />
-    <ClCompile Include="LoadDataDlg.cpp" />
+    <ClCompile Include="AuthorizationSet.cpp" />
+    <ClCompile Include="AuthorizationSetDlg.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
-    <ClCompile Include="PWDModifyDlg.cpp" />
-    <ClCompile Include="QueryCarTypePartsDlg.cpp" />
-    <ClCompile Include="QueryFileInfoDlg.cpp" />
-    <ClCompile Include="QuerySuppTypesDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SysAboutDlg.cpp" />
-    <ClCompile Include="SystemSetDlg.cpp" />
-    <ClCompile Include="CarTypeInfoDlg.cpp" />
-    <ClCompile Include="CarTypeMngQueryDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="CarInfoSearch.rc" />
+    <ResourceCompile Include="AuthorizationSet.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="CarInfoSearch.rc" />
+      <UserProperties RESOURCE_FILE="AuthorizationSet.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CSysAboutDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MFCLINK_OPERATE_LOOK, &CSysAboutDlg::OnClickedMfclinkOperateLook)
 	ON_COMMAND(IDC_MFCLINK_OPERATE_LOOK, &CSysAboutDlg::OnClickedMfclinkOperateLook)
 	ON_BN_DOUBLECLICKED(IDC_MFCLINK_OPERATE_LOOK, &CSysAboutDlg::OnDoubleclickedMfclinkOperateLook)
+	ON_BN_DOUBLECLICKED(IDC_MFCLINK_AUTHOR, &CSysAboutDlg::OnDoubleclickedMfclinkAuthor)
 END_MESSAGE_MAP()
 
 
@@ -126,4 +127,12 @@ void CSysAboutDlg::OnDoubleclickedMfclinkOperateLook()
 	strOperateFilePath += "操作文档外部版.doc";
 
 	ShellExecute(NULL,"open",strOperateFilePath,NULL,NULL,SW_NORMAL );
+}
+
+
+void CSysAboutDlg::OnDoubleclickedMfclinkAuthor()
+{
+	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
+
+	AfxMessageBox("Design by ZG！\n\n勿在浮沙筑高台!\n\n542187663@qq.com\n");
 }

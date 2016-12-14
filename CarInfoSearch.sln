@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CarInfoSearch", "CarInfoSea
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RepairCarInfoSaveDB", "RepairCarInfoSaveDB\RepairCarInfoSaveDB.vcxproj", "{A5D2EB3B-3C17-7C03-855A-BA1C890C3B2C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizationSet", "AuthorizationSet\AuthorizationSet.vcxproj", "{0A66C901-1F38-46CB-80A9-FD948EE125FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -22,6 +24,10 @@ Global
 		{A5D2EB3B-3C17-7C03-855A-BA1C890C3B2C}.Debug|Win32.Build.0 = Debug|Win32
 		{A5D2EB3B-3C17-7C03-855A-BA1C890C3B2C}.Release|Win32.ActiveCfg = Release|Win32
 		{A5D2EB3B-3C17-7C03-855A-BA1C890C3B2C}.Release|Win32.Build.0 = Release|Win32
+		{0A66C901-1F38-46CB-80A9-FD948EE125FD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0A66C901-1F38-46CB-80A9-FD948EE125FD}.Debug|Win32.Build.0 = Debug|Win32
+		{0A66C901-1F38-46CB-80A9-FD948EE125FD}.Release|Win32.ActiveCfg = Release|Win32
+		{0A66C901-1F38-46CB-80A9-FD948EE125FD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

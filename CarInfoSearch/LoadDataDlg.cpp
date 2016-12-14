@@ -6,10 +6,6 @@
 #include "LoadDataDlg.h"
 #include "afxdialogex.h"
 #include "CarInfoSearchDlg.h"
-#include <vector>
-#include <string>
-using namespace std;
-
 
 
 // CLoadDataDlg 对话框
@@ -30,6 +26,7 @@ void CLoadDataDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO_File_Type, m_loadSelectCombo);
+	DDX_Control(pDX, IDC_CHECK_TEST, m_testCheck);
 }
 
 
@@ -52,11 +49,17 @@ BOOL CLoadDataDlg::OnInitDialog()
 	m_loadSelectCombo.InsertString(1,"零件数据");
 	m_loadSelectCombo.InsertString(2,"机型零件数据");
 	m_loadSelectCombo.InsertString(3,"机型/零件数据");
+	m_loadSelectCombo.InsertString(4,"机型/零件数据扩展");
 
 	m_loadSelectCombo.SetCurSel(3);
-	//SetDlgItemText(IDC_EDIT_LoadFileName,"C:\\Users\\Administrator\\Desktop\\CarInfoManager\\bin\\carparts.txt");
+	m_testCheck.SetCheck(TRUE);
+	//SetDlgItemText(IDC_EDIT_LoadFileName,"C:\\Users\\Administrator\\Desktop\\CarInfoManager\\bin\\4A9.txt");
 
-	SetDlgItemText(IDC_EDIT_LoadFileName,"F:\\MyProject\\CarInfoManager\\bin\\D系列.txt");
+	CString strTemp = CCarInfoSearchDlg::s_curPath.c_str();
+	strTemp += "北汽动力B20.txt";
+	SetDlgItemText(IDC_EDIT_LoadFileName,strTemp);
+
+	SetDlgItemText(IDC_EDIT_LOAD_TYPE,"4A9");
 
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -102,6 +105,8 @@ void CLoadDataDlg::OnBnClickedButtonLoadBegin()
 		return;
 	}
 
+	m_bLog = m_testCheck.GetCheck()?true:false;
+
 	ifstream iFile;
 	iFile.open(strFileName.operator LPCSTR());
 	if (!iFile.is_open())
@@ -110,8 +115,82 @@ void CLoadDataDlg::OnBnClickedButtonLoadBegin()
 		return;
 	}
 
+	string strTemp = strFileName;
 	strFileName +="error.txt";
 	m_oFile.open(strFileName.operator LPCSTR(),ios::out|ios::app);
+
+	if (m_bLog)
+	{
+		strTemp += "out.txt";
+		m_oFormatFile.open(strTemp.c_str(),ios::out|ios::app);
+	}
+
+
+	string strTypeName = CCarInfoSearchDlg::s_curPath;
+	strTypeName += "type.txt";
+
+	vector<string> typeVect;
+	TypeMap typeMap;
+	char csTempTypeBuffer[100];
+	ifstream iTypeFile;
+	CString strTypeTemp,strKey;
+	int iPos = -1;
+
+	iTypeFile.open(strTypeName.c_str());
+	if (!iTypeFile.is_open())
+	{
+		return;
+	}
+
+	do 
+	{
+		memset(csTempTypeBuffer,0,100);
+		iTypeFile.getline(csTempTypeBuffer,100);
+		strTypeTemp = csTempTypeBuffer;
+		if (!strTypeTemp.IsEmpty())
+		{
+			if (-1 != (iPos = strTypeTemp.Find(',')))
+			{
+				strKey = strTypeTemp.Left(iPos);
+				typeVect.push_back(strTypeTemp.Right(strTypeTemp.GetLength()-iPos-1).operator LPCSTR());
+				TypeMap::iterator it = typeMap.find(strKey.operator LPCSTR());
+				if (it == typeMap.end())
+				{
+					TypeVect tempVect;
+					tempVect.push_back(strTypeTemp.Right(strTypeTemp.GetLength()-iPos-1).operator LPCSTR());
+					typeMap.insert(pair<string,TypeVect>(strKey,tempVect));
+				}
+				else
+				{
+					it->second.push_back(strTypeTemp.Right(strTypeTemp.GetLength()-iPos-1).operator LPCSTR());
+				}
+			}
+			else
+			{
+				typeVect.push_back(strTypeTemp.operator LPCSTR());
+			}
+		}
+	} while (!iTypeFile.eof());
+	iTypeFile.close();
+
+	strTypeName = CCarInfoSearchDlg::s_curPath;
+	strTypeName += "typeother.txt";
+
+	vector<string> typeOtherVect;
+	ifstream iTypeOtherFile;
+
+	iTypeOtherFile.open(strTypeName.c_str());
+	if (iTypeOtherFile.is_open())
+	{
+		do 
+		{
+			memset(csTempTypeBuffer,0,100);
+			iTypeOtherFile.getline(csTempTypeBuffer,100);
+
+			typeOtherVect.push_back(csTempTypeBuffer);
+		} while (!iTypeOtherFile.eof());
+		iTypeOtherFile.close();
+	}
 
 	char csTempBuffer[4096];
 	do 
@@ -120,6 +199,12 @@ void CLoadDataDlg::OnBnClickedButtonLoadBegin()
 		iFile.getline(csTempBuffer,4096);
 
 		if (strlen(csTempBuffer)<5)
+		{
+			continue;
+		}
+		strTemp = csTempBuffer;
+		if (-1 != strTemp.find("适用型号") || -1 != strTemp.find("说明")
+			||-1 != strTemp.find("零件名称") || -1 != strTemp.find("PART NAME"))
 		{
 			continue;
 		}
@@ -135,7 +220,10 @@ void CLoadDataDlg::OnBnClickedButtonLoadBegin()
 			InsertCarTypePartsData(csTempBuffer);
 			break;
 		case 3:
-			InsertCarTypePartsDataEx(csTempBuffer);
+			InsertCarTypePartsDataEx(csTempBuffer,typeVect,typeOtherVect,typeMap);
+			break;
+		case 4:
+			InsertCarTypePartsDataEx2(csTempBuffer,typeVect,typeOtherVect,typeMap);
 			break;
 		}
 	
@@ -152,6 +240,9 @@ void CLoadDataDlg::OnBnClickedButtonLoadBegin()
 
 	iFile.close();
 	m_oFile.close();
+
+	if (m_bLog)
+		m_oFormatFile.close();
 }
 
 
@@ -176,17 +267,17 @@ UINT DivStr(CString& str,CStringArray& Arr,char ch)
 	int nFindposi  = str.Find(ch);
 	if( nFindposi <0 )
 		return 0;
-	
-	while( nFindposi > 0)
+
+	while( nFindposi > -1)
 	{
-		Arr.Add(str.Left(nFindposi).Trim() );
+		Arr.Add(str.Left(nFindposi));
 		str = str.Right( str.GetLength() - nFindposi -1);
-		str.TrimLeft(ch);    //warning
+		//str.TrimLeft(ch);    //warning
 
 		nFindposi  = str.Find(ch);
 	}
 
-	if( !str.IsEmpty() )
+	//if( !str.IsEmpty() )
 		Arr.Add(str.Trim());
 
 	return Arr.GetSize();
@@ -229,7 +320,7 @@ UINT CLoadDataDlg::DivStrEx(CString& str,CStringArray& Arr,char ch,int iCount)
 	return Arr.GetSize();
 }
 
-
+/*
 bool CLoadDataDlg::InsertCarTypeData(const char* lpStr)
 {
 	CString strData = lpStr;
@@ -259,7 +350,161 @@ bool CLoadDataDlg::InsertCarTypeData(const char* lpStr)
 	{
 		return false;
 	}
+}*/
+/*
+bool CLoadDataDlg::InsertCarTypeData(const char* lpStr)
+{
+	CString strData = lpStr;
+	CStringArray strArray;
+	char ch = 9;
+	
+	ASCarTypeTableInfo tempInfo;
+	strcpy(tempInfo.csCarTypeNum,"4A9");
+
+	if (DivStrEx(strData,strArray,ch,14))
+	{
+		if (!strArray[0].IsEmpty())
+			strncpy(tempInfo.csCarFactory,strArray[0].operator LPCSTR(),32);
+		if (!strArray[1].IsEmpty())
+			strncpy(tempInfo.csCustomerCode,strArray[1].operator LPCSTR(),16);
+		if (!strArray[2].IsEmpty())
+			strncpy(tempInfo.csCarDetailTypeNum,strArray[2].operator LPCSTR(),32);
+		if (!strArray[3].IsEmpty())
+			strncpy(tempInfo.csCarType,strArray[3].operator LPCSTR(),32);
+		if (!strArray[4].IsEmpty())
+			strncpy(tempInfo.csCarName,strArray[4].operator LPCSTR(),32);
+		if (!strArray[5].IsEmpty())
+			strncpy(tempInfo.csCarPattern,strArray[5].operator LPCSTR(),32);
+		if (!strArray[6].IsEmpty())
+			strncpy(tempInfo.csEnginePattern,strArray[6].operator LPCSTR(),32);
+		if (!strArray[7].IsEmpty())
+			strncpy(tempInfo.csMarkModel,strArray[7].operator LPCSTR(),16);
+
+		CString strNote,strTemp;
+		int i=1;
+		//排放法规		生产状态	EMS系统	备注	CL
+		if (!strArray[8].IsEmpty())
+		{
+			strTemp.Format("%d、排放法规为%s；",i++,strArray[8]);
+			strNote += strTemp;
+		}
+
+		if (!strArray[9].IsEmpty())
+		{
+			strTemp.Format("%d、变速箱%s；",i++,strArray[9]);
+			strNote += strTemp;
+		}
+
+		if (!strArray[11].IsEmpty())
+		{
+			strTemp.Format("%d、EMS系统为%s；",i++,strArray[11]);
+			strNote += strTemp;
+		}
+
+		if (!strArray[12].IsEmpty())
+		{
+			strTemp.Format("%d、备注为%s；",i++,strArray[12]);
+			strNote += strTemp;
+		}
+
+		if (!strArray[13].IsEmpty())
+		{
+			strTemp.Format("%d、CL为%s；",i++,strArray[13]);
+			strNote += strTemp;
+		}
+
+		tempInfo.strCarNotes = strNote.operator LPCSTR();
+
+		ASInsertCarTypeInfo(&tempInfo);
+		return true;
+	}
+	else
+	{
+		m_oFile<<lpStr<<endl;
+		return false;
+	}
+}*/
+
+bool CLoadDataDlg::InsertCarTypeData(const char* lpStr)
+{
+	CString strData = lpStr;
+	CStringArray strArray;
+	char ch = 9;
+
+	static ASCarTypeTableInfo tempInfo;
+	strcpy(tempInfo.csCarTypeNum,"4G6");
+	memset(tempInfo.csCarDetailTypeNum,0,sizeof(tempInfo.csCarDetailTypeNum));
+	memset(tempInfo.csCarType,0,sizeof(tempInfo.csCarType));
+	memset(tempInfo.csCarName,0,sizeof(tempInfo.csCarName));
+	memset(tempInfo.csCarPattern,0,sizeof(tempInfo.csCarPattern));
+	memset(tempInfo.csEnginePattern,0,sizeof(tempInfo.csEnginePattern));
+	memset(tempInfo.csMarkModel,0,sizeof(tempInfo.csMarkModel));
+	tempInfo.strCarNotes.clear();
+
+	if (DivStrEx(strData,strArray,ch,15) == 15)
+	{
+		if (!strArray[0].IsEmpty())
+			strncpy(tempInfo.csCarFactory,strArray[0].operator LPCSTR(),32);
+		if (!strArray[1].IsEmpty())
+			strncpy(tempInfo.csCustomerCode,strArray[1].operator LPCSTR(),16);
+		if (!strArray[3].IsEmpty())
+			strncpy(tempInfo.csCarDetailTypeNum,strArray[3].operator LPCSTR(),32);
+		if (!strArray[4].IsEmpty())
+			strncpy(tempInfo.csCarType,strArray[4].operator LPCSTR(),32);
+		if (!strArray[5].IsEmpty())
+			strncpy(tempInfo.csCarName,strArray[5].operator LPCSTR(),32);
+		if (!strArray[6].IsEmpty())
+			strncpy(tempInfo.csCarPattern,strArray[6].operator LPCSTR(),32);
+		if (!strArray[7].IsEmpty())
+			strncpy(tempInfo.csEnginePattern,strArray[7].operator LPCSTR(),32);
+		if (!strArray[8].IsEmpty())
+			strncpy(tempInfo.csMarkModel,strArray[8].operator LPCSTR(),16);
+
+		CString strNote,strTemp;
+		int i=1;
+		//排放法规		生产状态	EMS系统	备注	CL
+		if (!strArray[9].IsEmpty())
+		{
+			strTemp.Format("%d、排放法规为%s；",i++,strArray[9]);
+			strNote += strTemp;
+		}
+
+		if (!strArray[10].IsEmpty())
+		{
+			strTemp.Format("%d、变速箱%s；",i++,strArray[10]);
+			strNote += strTemp;
+		}
+
+		if (!strArray[12].IsEmpty())
+		{
+			strTemp.Format("%d、EMS系统为%s；",i++,strArray[12]);
+			strNote += strTemp;
+		}
+
+		if (!strArray[13].IsEmpty())
+		{
+			strTemp.Format("%d、备注为%s；",i++,strArray[13]);
+			strNote += strTemp;
+		}
+
+		if (!strArray[14].IsEmpty())
+		{
+			strTemp.Format("%d、CL为%s；",i++,strArray[14]);
+			strNote += strTemp;
+		}
+
+		tempInfo.strCarNotes = strNote.operator LPCSTR();
+
+		ASInsertCarTypeInfo(&tempInfo);
+		return true;
+	}
+	else
+	{
+		m_oFile<<lpStr<<endl;
+		return false;
+	}
 }
+
 
 bool CLoadDataDlg::InsertCarPartsData(const char* lpStr)
 {
@@ -289,7 +534,7 @@ bool CLoadDataDlg::InsertCarPartsData(const char* lpStr)
 	}
 	else
 	{
-		AfxMessageBox(lpStr);
+		m_oFile<<lpStr<<endl;
 		return true;
 	}
 }
@@ -624,6 +869,7 @@ bool CLoadDataDlg::InsertCarTypePartsDataEx(const char* lpStr)
 	}
 }*/
 
+/*
 bool CLoadDataDlg::InsertCarTypePartsDataEx(const char* lpStr)
 {
 	//3-8
@@ -687,4 +933,628 @@ bool CLoadDataDlg::InsertCarTypePartsDataEx(const char* lpStr)
 		m_oFile<<lpStr<<endl;
 		return true;
 	}
+
+}*/
+
+#define  DATA_TYPE_HEAD_E		(0)
+#define  DATA_TYPE_HEAD_C		(1)
+#define  DATA_TYPE_DATA			(2)
+#define  DATA_TYPE_DATA_NAME	(3)
+#define  DATA_TYPE_DATA_SUPP	(4)
+
+bool IsHaveItem(vector<string>& typeVect,const char* lpType)
+{
+	for (int i=0;i<typeVect.size();++i)
+	{
+		if (0 == typeVect[i].compare(lpType))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool JudgeDataType(CStringArray& strArray)
+{
+	for (int i=1;i<strArray.GetSize();++i)
+	{
+		if (!strArray[i].IsEmpty())
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool JudgeDataHead(CStringArray& strArray)
+{
+	int iCount=0;
+	for (int i=0;i<strArray.GetSize();++i)
+	{
+		if (!strArray[i].IsEmpty())
+		{
+			++iCount;
+		}
+	}
+
+	return iCount==1?true:false;
+}
+
+bool JudgeDataTypeEx(CStringArray& strArray)
+{
+	for (int i=0;i<strArray.GetSize();++i)
+	{
+		if (!strArray[i].IsEmpty())
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool CLoadDataDlg::InsertCarTypePartsDataEx(const char* lpStr,vector<string>& typeVect)
+{
+	CString strData = lpStr;
+	CStringArray strArray;
+	char ch = 9;
+	int index;
+	const int nRowCount = 6;
+
+	static ASCarPartTableInfo tempPartInfo;
+	static BYTE bType = DATA_TYPE_HEAD_E;
+
+	strncpy(tempPartInfo.csCarTypeNum,"4A9",16);
+
+	int iCount = DivStr(strData,strArray,ch);
+
+	if (JudgeDataTypeEx(strArray))
+	{
+		return true;
+	}
+
+	if (iCount != nRowCount)
+	{
+		m_oFile<<lpStr<<endl;
+		return true;
+	}
+	else if(JudgeDataType(strArray))
+	{
+		if (DATA_TYPE_HEAD_E == bType)
+		{
+			bType = DATA_TYPE_HEAD_C;
+			strArray[0].Trim();
+			int iPos = strArray[0].Find(' ');
+			strncpy(tempPartInfo.csWholeNum,strArray[0].Left(iPos).operator LPCSTR(),16);
+			strncpy(tempPartInfo.csWholeEngName,strArray[0].Right(strArray[0].GetLength()-iPos-1).Trim().operator LPCSTR(),64);
+
+			memset(tempPartInfo.csPartNum,0,sizeof(tempPartInfo.csPartNum));
+			memset(tempPartInfo.csWholeChinName,0,sizeof(tempPartInfo.csWholeChinName));
+			memset(tempPartInfo.csItemNum,0,sizeof(tempPartInfo.csItemNum));
+			memset(tempPartInfo.csEngName,0,sizeof(tempPartInfo.csEngName));
+			memset(tempPartInfo.csChinName,0,sizeof(tempPartInfo.csChinName));
+			tempPartInfo.strRemark.clear();
+		}
+		else
+		{
+			bType = DATA_TYPE_HEAD_E;
+			if (!strArray[0].IsEmpty())
+				strncpy(tempPartInfo.csWholeChinName,strArray[0].operator LPCSTR(),64);
+		}
+	}
+	else
+	{
+		if (!strArray[0].IsEmpty())
+		{
+			if (!strArray[0].IsEmpty())
+				strncpy(tempPartInfo.csItemNum,strArray[0].operator LPCSTR(),16);
+			if (!strArray[1].IsEmpty())
+				strncpy(tempPartInfo.csEngName,strArray[1].operator LPCSTR(),64);
+
+			memset(tempPartInfo.csPartNum,0,sizeof(tempPartInfo.csPartNum));
+			memset(tempPartInfo.csChinName,0,sizeof(tempPartInfo.csChinName));
+			tempPartInfo.strRemark.clear();
+		}
+		else
+		{
+			if (strArray[3].IsEmpty())
+			{
+				strncpy(tempPartInfo.csChinName,strArray[1].operator LPCSTR(),64);
+			}
+			else
+			{
+				strncpy(tempPartInfo.csPartNum,strArray[3].operator LPCSTR(),32);
+				tempPartInfo.strRemark = strArray[5].operator LPCSTR();
+
+				ASCarTypePartsTableInfo tempInfo;
+				strcpy(tempInfo.csCarTypeNum,tempPartInfo.csCarTypeNum);
+				strcpy(tempInfo.csPartNum,tempPartInfo.csPartNum);
+
+				if (0 == strArray[1].CompareNoCase("ALL"))
+				{
+					if(m_bLog)
+					{
+						FormatResult(&tempPartInfo,typeVect);
+					}
+					else
+					{
+						ASInsertCarPartInfo(&tempPartInfo);
+						ASInsertCarTypePartsInfo(&tempInfo,typeVect);
+					}
+				}
+				else if (IsHaveItem(typeVect,strArray[1].operator LPCSTR()))
+				{
+					std::vector<string> tempVect;
+					tempVect.push_back(strArray[1].operator LPCSTR());
+
+					if (m_bLog)
+					{
+						FormatResult(&tempPartInfo,tempVect);
+					}
+					else
+					{
+						ASInsertCarPartInfo(&tempPartInfo);
+						ASInsertCarTypePartsInfo(&tempInfo,tempVect);
+					}
+				}
+				else
+				{
+					strncpy(tempPartInfo.csChinName,strArray[1].operator LPCSTR(),64);
+
+					if (m_bLog)
+					{
+						FormatResult(&tempPartInfo,typeVect,false);
+					}
+					else
+					{
+						ASInsertCarPartInfo(&tempPartInfo);
+						//ASInsertCarTypePartsInfo(&tempInfo,typeVect);
+					}
+				}
+			}
+		}
+	
+	}
+
+	return true;
+}
+
+TypeMap::iterator IsTheKeyValue(TypeMap& typeMap,const char* lpValue)
+{
+
+	TypeMap::iterator it = typeMap.find(lpValue);
+
+	return it;
+
+}
+
+bool CLoadDataDlg::InsertCarTypePartsDataEx(const char* lpStr,vector<string>& typeVect,TypeMap& typeMap)
+{
+	CString strData = lpStr;
+	CStringArray strArray;
+	char ch = 9;
+	int index;
+	const int nRowCount = 6;
+	TypeMap::iterator it = typeMap.end();
+
+	static ASCarPartTableInfo tempPartInfo;
+	static BYTE bType = DATA_TYPE_HEAD_E;
+
+	strncpy(tempPartInfo.csCarTypeNum,"4A9",16);
+
+	int iCount = DivStr(strData,strArray,ch);
+
+	if (JudgeDataTypeEx(strArray))
+	{
+		return true;
+	}
+
+	if (iCount != nRowCount)
+	{
+		m_oFile<<lpStr<<endl;
+		return true;
+	}
+	else if(JudgeDataType(strArray))
+	{
+		if (DATA_TYPE_HEAD_E == bType)
+		{
+			bType = DATA_TYPE_HEAD_C;
+			strArray[0].Trim();
+			int iPos = strArray[0].Find(' ');
+			strncpy(tempPartInfo.csWholeNum,strArray[0].Left(iPos).operator LPCSTR(),16);
+			strncpy(tempPartInfo.csWholeEngName,strArray[0].Right(strArray[0].GetLength()-iPos-1).Trim().operator LPCSTR(),64);
+
+			memset(tempPartInfo.csPartNum,0,sizeof(tempPartInfo.csPartNum));
+			memset(tempPartInfo.csWholeChinName,0,sizeof(tempPartInfo.csWholeChinName));
+			memset(tempPartInfo.csItemNum,0,sizeof(tempPartInfo.csItemNum));
+			memset(tempPartInfo.csEngName,0,sizeof(tempPartInfo.csEngName));
+			memset(tempPartInfo.csChinName,0,sizeof(tempPartInfo.csChinName));
+			tempPartInfo.strRemark.clear();
+		}
+		else
+		{
+			bType = DATA_TYPE_HEAD_E;
+			if (!strArray[0].IsEmpty())
+				strncpy(tempPartInfo.csWholeChinName,strArray[0].Trim().operator LPCSTR(),64);
+		}
+	}
+	else
+	{
+		if (!strArray[0].IsEmpty())
+		{
+			if (!strArray[0].IsEmpty())
+				strncpy(tempPartInfo.csItemNum,strArray[0].operator LPCSTR(),16);
+			if (!strArray[1].IsEmpty())
+				strncpy(tempPartInfo.csEngName,strArray[1].operator LPCSTR(),64);
+
+			memset(tempPartInfo.csPartNum,0,sizeof(tempPartInfo.csPartNum));
+			memset(tempPartInfo.csChinName,0,sizeof(tempPartInfo.csChinName));
+			tempPartInfo.strRemark.clear();
+		}
+		else
+		{
+			if (strArray[3].IsEmpty())
+			{
+				strncpy(tempPartInfo.csChinName,strArray[1].operator LPCSTR(),64);
+			}
+			else
+			{
+				strncpy(tempPartInfo.csPartNum,strArray[3].operator LPCSTR(),32);
+				tempPartInfo.strRemark = strArray[5].operator LPCSTR();
+
+				ASCarTypePartsTableInfo tempInfo;
+				strcpy(tempInfo.csCarTypeNum,tempPartInfo.csCarTypeNum);
+				strcpy(tempInfo.csPartNum,tempPartInfo.csPartNum);
+
+				if (0 == strArray[1].CompareNoCase("ALL"))
+				{
+					if(m_bLog)
+					{
+						FormatResult(&tempPartInfo,typeVect);
+					}
+					else
+					{
+						ASInsertCarPartInfo(&tempPartInfo);
+						ASInsertCarTypePartsInfo(&tempInfo,typeVect);
+					}
+				}
+				else if (typeMap.end() != (it=typeMap.find( strArray[1].operator LPCSTR())))
+				{
+					if(m_bLog)
+					{
+						FormatResult(&tempPartInfo,it->second);
+					}
+					else
+					{
+						ASInsertCarPartInfo(&tempPartInfo);
+						ASInsertCarTypePartsInfo(&tempInfo,it->second);
+					}
+				}
+				else if (IsHaveItem(typeVect,strArray[1].operator LPCSTR()))
+				{
+					std::vector<string> tempVect;
+					tempVect.push_back(strArray[1].operator LPCSTR());
+
+					if (m_bLog)
+					{
+						FormatResult(&tempPartInfo,tempVect);
+					}
+					else
+					{
+						ASInsertCarPartInfo(&tempPartInfo);
+						ASInsertCarTypePartsInfo(&tempInfo,tempVect);
+					}
+				}
+				else
+				{
+					strncpy(tempPartInfo.csChinName,strArray[1].operator LPCSTR(),64);
+
+					if (m_bLog)
+					{
+						FormatResult(&tempPartInfo,typeVect,false);
+					}
+					else
+					{
+						ASInsertCarPartInfo(&tempPartInfo);
+						//ASInsertCarTypePartsInfo(&tempInfo,typeVect);
+					}
+				}
+			}
+		}
+
+	}
+
+	return true;
+}
+
+bool CLoadDataDlg::InsertCarTypePartsDataEx(const char* lpStr,vector<string>& typeVect,vector<string>& typeOtherVect,TypeMap& typeMap)
+{		
+	CString strData = lpStr;
+	CStringArray strArray;
+	char ch = 9;
+	int index;
+	const int nRowCount = 6;
+	TypeMap::iterator it = typeMap.end();
+
+	static ASCarPartTableInfo tempPartInfo;
+	static BYTE bType = DATA_TYPE_HEAD_E;
+
+	CString strGetTypeTemp;
+	GetDlgItemText(IDC_EDIT_LOAD_TYPE,strGetTypeTemp);
+	strncpy(tempPartInfo.csCarTypeNum,strGetTypeTemp.operator LPCSTR(),16);
+
+	int iCount = DivStr(strData,strArray,ch);
+
+	if (JudgeDataTypeEx(strArray))
+	{
+		return true;
+	}
+
+	if (iCount != nRowCount)
+	{
+		m_oFile<<lpStr<<endl;
+		return true;
+	}
+	else if(JudgeDataType(strArray))
+	{
+		if (DATA_TYPE_HEAD_E == bType)
+		{
+			bType = DATA_TYPE_HEAD_C;
+			strArray[0].Trim();
+			int iPos = strArray[0].Find(' ');
+			strncpy(tempPartInfo.csWholeNum,strArray[0].Left(iPos).operator LPCSTR(),16);
+			strncpy(tempPartInfo.csWholeEngName,strArray[0].Right(strArray[0].GetLength()-iPos-1).Trim().operator LPCSTR(),64);
+
+			memset(tempPartInfo.csPartNum,0,sizeof(tempPartInfo.csPartNum));
+			memset(tempPartInfo.csWholeChinName,0,sizeof(tempPartInfo.csWholeChinName));
+			memset(tempPartInfo.csItemNum,0,sizeof(tempPartInfo.csItemNum));
+			memset(tempPartInfo.csEngName,0,sizeof(tempPartInfo.csEngName));
+			memset(tempPartInfo.csChinName,0,sizeof(tempPartInfo.csChinName));
+			tempPartInfo.strRemark.clear();
+		}
+		else
+		{
+			bType = DATA_TYPE_HEAD_E;
+			if (!strArray[0].IsEmpty())
+				strncpy(tempPartInfo.csWholeChinName,strArray[0].Trim().operator LPCSTR(),64);
+		}
+	}
+	else
+	{
+		if (!strArray[0].IsEmpty())
+		{
+			if (!strArray[0].IsEmpty())
+				strncpy(tempPartInfo.csItemNum,strArray[0].operator LPCSTR(),16);
+			if (!strArray[1].IsEmpty())
+				strncpy(tempPartInfo.csEngName,strArray[1].operator LPCSTR(),64);
+
+			memset(tempPartInfo.csPartNum,0,sizeof(tempPartInfo.csPartNum));
+			memset(tempPartInfo.csChinName,0,sizeof(tempPartInfo.csChinName));
+			tempPartInfo.strRemark.clear();
+		}
+		else
+		{
+			if (strArray[3].IsEmpty())
+			{
+				strncpy(tempPartInfo.csChinName,strArray[1].operator LPCSTR(),64);
+			}
+			else
+			{
+				strncpy(tempPartInfo.csPartNum,strArray[3].operator LPCSTR(),32);
+				tempPartInfo.strRemark = strArray[5].operator LPCSTR();
+
+				ASCarTypePartsTableInfo tempInfo;
+				strcpy(tempInfo.csCarTypeNum,tempPartInfo.csCarTypeNum);
+				strcpy(tempInfo.csPartNum,tempPartInfo.csPartNum);
+
+				if (0 == strArray[1].CompareNoCase("ALL"))
+				{
+					if(m_bLog)
+					{
+						FormatResult(&tempPartInfo,typeVect);
+					}
+					else
+					{
+						ASInsertCarPartInfo(&tempPartInfo);
+						ASInsertCarTypePartsInfo(&tempInfo,typeVect);
+					}
+				}
+				else if (typeMap.end() != (it=typeMap.find( strArray[1].operator LPCSTR())))
+				{
+					if(m_bLog)
+					{
+						FormatResult(&tempPartInfo,it->second);
+					}
+					else
+					{
+						ASInsertCarPartInfo(&tempPartInfo);
+						ASInsertCarTypePartsInfo(&tempInfo,it->second);
+					}
+				}
+				else if (IsHaveItem(typeVect,strArray[1].operator LPCSTR())||
+					IsHaveItem(typeOtherVect,strArray[1].operator LPCSTR()))
+				{
+					std::vector<string> tempVect;
+					tempVect.push_back(strArray[1].operator LPCSTR());
+
+					if (m_bLog)
+					{
+						FormatResult(&tempPartInfo,tempVect);
+					}
+					else
+					{
+						ASInsertCarPartInfo(&tempPartInfo);
+						ASInsertCarTypePartsInfo(&tempInfo,tempVect);
+					}
+				}
+				else
+				{
+					strncpy(tempPartInfo.csChinName,strArray[1].operator LPCSTR(),64);
+
+					if (m_bLog)
+					{
+						FormatResult(&tempPartInfo,typeVect,false);
+					}
+					else
+					{
+						ASInsertCarPartInfo(&tempPartInfo);
+						//ASInsertCarTypePartsInfo(&tempInfo,typeVect);
+					}
+				}
+			}
+		}
+
+	}
+
+	return true;
+}
+
+void CLoadDataDlg::FormatResult(void* lpResult,vector<string>& typeVect,bool bShow/*=true*/)
+{
+	ASCarPartTableInfo* pInfo = (ASCarPartTableInfo*)lpResult;
+
+	ostringstream ostr;
+	ostr<<pInfo->csCarTypeNum<<",";
+	ostr<<pInfo->csPartNum<<",";
+	ostr<<pInfo->csWholeNum<<",";
+	ostr<<pInfo->csWholeEngName<<",";
+	ostr<<pInfo->csWholeChinName<<",";
+	ostr<<pInfo->csItemNum<<",";
+	ostr<<pInfo->csEngName<<",";
+	ostr<<pInfo->csChinName<<",";
+	ostr<<pInfo->strRemark<<",";
+
+	if (bShow)
+	{
+		ostr<<"<";
+		for (int i=0;i<typeVect.size();++i)
+			ostr<<typeVect[i]<<",";
+		ostr<<">\n";
+	}
+	else
+	{
+		ostr<<"<>\n";
+	}
+
+	m_oFormatFile<<ostr.str();
+}
+
+bool CLoadDataDlg::InsertCarTypePartsDataEx2(const char* lpStr,vector<string>& typeVect,vector<string>& typeOtherVect,TypeMap& typeMap)
+{
+	CString strData = lpStr;
+	CStringArray strArray;
+	char ch = 9;
+	int index;
+	const int nRowCount = 9;
+	TypeMap::iterator it = typeMap.end();
+
+	static ASCarPartTableInfo tempPartInfo;
+	static BYTE bType = DATA_TYPE_HEAD_E;
+
+	CString strGetTypeTemp;
+	GetDlgItemText(IDC_EDIT_LOAD_TYPE,strGetTypeTemp);
+	strncpy(tempPartInfo.csCarTypeNum,strGetTypeTemp.operator LPCSTR(),16);
+
+	int iCount = DivStr(strData,strArray,ch);
+
+	if (JudgeDataTypeEx(strArray))
+	{
+		return true;
+	}
+
+	if (iCount != nRowCount)
+	{
+		m_oFile<<lpStr<<endl;
+		return true;
+	}
+	else if(JudgeDataHead(strArray))
+	{
+		strArray[0].Trim();
+		int iPos = strArray[0].Find(' '),iNext;
+		strncpy(tempPartInfo.csWholeNum,strArray[0].Left(iPos).operator LPCSTR(),16);
+		iNext = strArray[0].ReverseFind(' ');
+		strncpy(tempPartInfo.csWholeEngName,strArray[0].Mid(iPos+1,iNext-iPos-1).Trim().operator LPCSTR(),64);
+		strncpy(tempPartInfo.csWholeChinName,strArray[0].Right(strArray[0].GetLength()-iNext-1).Trim().operator LPCSTR(),64);
+
+		memset(tempPartInfo.csPartNum,0,sizeof(tempPartInfo.csPartNum));
+		memset(tempPartInfo.csItemNum,0,sizeof(tempPartInfo.csItemNum));
+		memset(tempPartInfo.csEngName,0,sizeof(tempPartInfo.csEngName));
+		memset(tempPartInfo.csChinName,0,sizeof(tempPartInfo.csChinName));
+		tempPartInfo.strRemark.clear();
+	}
+	else
+	{
+		if (!strArray[0].IsEmpty())
+			strncpy(tempPartInfo.csItemNum,strArray[0].operator LPCSTR(),16);
+		if (!strArray[1].IsEmpty())
+			strncpy(tempPartInfo.csChinName,strArray[1].operator LPCSTR(),64);
+		if (!strArray[2].IsEmpty())
+			strncpy(tempPartInfo.csEngName,strArray[2].operator LPCSTR(),64);
+		if (!strArray[3].IsEmpty())
+			strncpy(tempPartInfo.csPartNum,strArray[3].operator LPCSTR(),32);
+		tempPartInfo.strRemark = strArray[8].operator LPCSTR();
+
+		ASCarTypePartsTableInfo tempInfo;
+		strcpy(tempInfo.csCarTypeNum,tempPartInfo.csCarTypeNum);
+		strcpy(tempInfo.csPartNum,tempPartInfo.csPartNum);
+
+		if (0 == strArray[4].CompareNoCase("ALL"))
+		{
+			if(m_bLog)
+			{
+				FormatResult(&tempPartInfo,typeVect);
+			}
+			else
+			{
+				ASInsertCarPartInfo(&tempPartInfo);
+				ASInsertCarTypePartsInfo(&tempInfo,typeVect);
+			}
+		}
+		else if (typeMap.end() != (it=typeMap.find( strArray[4].operator LPCSTR())))
+		{
+			if(m_bLog)
+			{
+				FormatResult(&tempPartInfo,it->second);
+			}
+			else
+			{
+				ASInsertCarPartInfo(&tempPartInfo);
+				ASInsertCarTypePartsInfo(&tempInfo,it->second);
+			}
+		}
+		else if (IsHaveItem(typeVect,strArray[4].operator LPCSTR())||
+			IsHaveItem(typeOtherVect,strArray[4].operator LPCSTR()))
+		{
+			std::vector<string> tempVect;
+			tempVect.push_back(strArray[4].operator LPCSTR());
+
+			if (m_bLog)
+			{
+				FormatResult(&tempPartInfo,tempVect);
+			}
+			else
+			{
+				ASInsertCarPartInfo(&tempPartInfo);
+				ASInsertCarTypePartsInfo(&tempInfo,tempVect);
+			}
+		}
+		else
+		{
+			strncpy(tempPartInfo.csChinName,strArray[4].operator LPCSTR(),64);
+
+			if (m_bLog)
+			{
+				FormatResult(&tempPartInfo,typeVect,false);
+			}
+			else
+			{
+				ASInsertCarPartInfo(&tempPartInfo);
+				//ASInsertCarTypePartsInfo(&tempInfo,typeVect);
+			}
+		}
+	}
+
+	return true;
 }
